@@ -41,6 +41,31 @@
     .nav a{padding:10px 12px;border-radius:10px;color:var(--muted)}; .nav a.active, .nav a:hover{color:var(--text);background:#111936}
     .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
     .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:center;padding:28px 0}
+    /* Layout shop con sidebar a sinistra */
+.layout-shop{
+  display:grid;
+  grid-template-columns: 260px 1fr;
+  gap:20px;
+  align-items:start;
+}
+.sidebar-filters{
+  position:sticky; top:84px;
+  background:var(--card);
+  border:1px solid #1e293b; border-radius:16px; padding:16px;
+}
+.filter-group{margin-bottom:16px}
+.filter-group h4{margin:0 0 8px; font-size:0.95rem}
+.filter-row{display:flex; align-items:center; gap:10px; margin:6px 0}
+.range{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.small{font-size:.9rem}
+.clearline{display:flex; justify-content:space-between; align-items:center}
+.btn.small{padding:8px 10px; border-radius:10px; font-size:.9rem}
+
+/* Mobile: sidebar sopra */
+@media (max-width: 980px){
+  .layout-shop{grid-template-columns:1fr}
+  .sidebar-filters{position:static}
+}
     .card{background:var(--card);border:1px solid #1e293b;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
     .card.pad{padding:20px}
     .muted{color:var(--muted)}
@@ -354,64 +379,131 @@
   /********************
    * VISTE            *
    ********************/
-  function renderShop(){
-    const view = qs('#view');
-    view.innerHTML = `
-      <section class="hero">
-        <div class="card pad">
-          <h1 style="margin:0 0 6px">Nutrizione semplice, risultati reali</h1>
-          <p class="muted">Scegli tra shake, bevande energetiche, snack proteici e supporti quotidiani. Offriamo consulenza gratuita per aiutarti a definire il programma più adatto a te.</p>
-          <div class="toolbar" style="margin-top:14px">
-            <input class="input" id="search" placeholder="Cerca prodotto, categoria o parola chiave…"/>
-            <button class="btn" id="filterSnack">🍫 Snack</button>
-            <button class="btn" id="filterShake">🥤 Shake</button>
-            <button class="btn ghost" id="resetFilters">Reset</button>
+function renderShop(){
+  const view = qs('#view');
+  // categorie e tag dinamici dal catalogo
+  const categories = [...new Set(PRODUCTS.map(p=>p.category))].sort();
+  const tags = [...new Set(PRODUCTS.flatMap(p=>p.tags||[]))].sort();
+
+  view.innerHTML = `
+    <section class="layout-shop">
+      <!-- SIDEBAR FILTRI -->
+      <aside class="sidebar-filters">
+        <div class="clearline">
+          <h3 style="margin:0">Filtri</h3>
+          <button id="resetAll" class="btn ghost small">Reset</button>
+        </div>
+
+        <div class="filter-group">
+          <h4>Cerca</h4>
+          <input class="input" id="search" placeholder="Nome, categoria, parola…" />
+        </div>
+
+        <div class="filter-group">
+          <h4>Categoria</h4>
+          <div id="catWrap"></div>
+        </div>
+
+        <div class="filter-group">
+          <h4>Prezzo</h4>
+          <div class="range">
+            <input class="input" id="minPrice" type="number" step="0.01" placeholder="Min" />
+            <input class="input" id="maxPrice" type="number" step="0.01" placeholder="Max" />
           </div>
         </div>
-        <div class="card pad">
-          <strong>Consulenza personalizzata</strong>
-          <p class="muted">Nuovo/a? Prenota una call gratuita di 15 minuti: analizziamo le tue abitudini e ti proponiamo un piano realistico.</p>
-          <div class="ribbon"><span class="chip">Durata: 15'</span><span class="chip">Online</span></div>
-          <div style="margin-top:12px"><a href="#contatti" class="btn brand">Prenota ora</a></div>
-        </div>
-      </section>
-      <section class="card pad">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
-          <strong>Prodotti</strong>
-          <div class="muted" id="count"></div>
-        </div>
-        <div class="products" id="products"></div>
-      </section>`;
 
-    const listEl = qs('#products');
-    const countEl = qs('#count');
+        ${tags.length ? `
+        <div class="filter-group">
+          <h4>Tag</h4>
+          <div id="tagWrap" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+        </div>` : ''}
 
-    function renderList(list){
-      countEl.textContent = `${list.length} risultati`;
-      listEl.innerHTML = list.map(p=>`
-        <article class="product card">
-          <div class="img-wrap"><img src="${p.image}" alt="${p.name}" loading="lazy"></div>
-          ${p.tags?.includes('new')?'<div class="badge">NUOVO</div>':''}
-          ${p.tags?.includes('best-seller')?'<div class="badge" style="left:auto;right:12px">BEST</div>':''}
-          <div class="pad" style="padding:14px">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-              <h3 style="margin:0;font-size:1rem">${p.name}</h3>
-              <div class="price">${money(p.price)}</div>
-            </div>
-            <div class="muted" style="font-size:.9rem;margin:6px 0 10px">${p.category}</div>
-            <div class="toolbar">
-              <button class="btn brand" data-action="add" data-id="${p.id}">Aggiungi</button>
-              <button class="btn" data-action="view" data-id="${p.id}">Dettagli</button>
-              ${p.paymentLink?`<a class="btn" href="${p.paymentLink}" target="_blank" rel="noopener">Compra ora</a>`:''}
-            </div>
+        <div class="filter-group">
+          <button id="apply" class="btn brand small" style="width:100%">Applica filtri</button>
+        </div>
+
+        <p class="muted small">Suggerimenti: puoi combinare ricerca + categorie + prezzo + tag.</p>
+      </aside>
+
+      <!-- CONTENUTO -->
+      <div>
+        <section class="card pad">
+          <div class="clearline" style="margin-bottom:12px">
+            <strong>Prodotti</strong>
+            <div class="muted" id="count"></div>
           </div>
-        </article>
-      `).join('');
+          <div class="toolbar" style="margin-bottom:12px">
+            <button class="btn" id="quickSnack">🍫 Snack</button>
+            <button class="btn" id="quickShake">🥤 Shake</button>
+            <button class="btn ghost" id="quickReset">Reset rapida</button>
+          </div>
+          <div class="products" id="products"></div>
+        </section>
+      </div>
+    </section>`;
 
-      // Bind
-      listEl.querySelectorAll('[data-action="add"]').forEach(b=> b.onclick = ()=> addToCart(PRODUCTS.find(p=>p.id===b.dataset.id)));
-      listEl.querySelectorAll('[data-action="view"]').forEach(b=> b.onclick = ()=> openModal(PRODUCTS.find(p=>p.id===b.dataset.id)));
-    }
+  // render categorie
+  const catWrap = qs('#catWrap');
+  catWrap.innerHTML = categories.map(c => `
+    <label class="filter-row">
+      <input type="checkbox" name="cat" value="${c}">
+      <span class="small">${c}</span>
+    </label>
+  `).join('');
+
+  // render tag
+  const tagWrap = qs('#tagWrap');
+  if (tagWrap) {
+    tagWrap.innerHTML = tags.map(t => `
+      <label class="pill" style="user-select:none">
+        <input type="checkbox" name="tag" value="${t}" style="display:none">
+        ${t}
+      </label>
+    `).join('');
+    // attiva stile pill su click
+    tagWrap.querySelectorAll('label.pill').forEach(lbl=>{
+      lbl.addEventListener('click', ()=>{
+        const input = lbl.querySelector('input');
+        input.checked = !input.checked;
+        lbl.classList.toggle('active', input.checked);
+      });
+    });
+  }
+
+  const listEl = qs('#products');
+  const countEl = qs('#count');
+
+  function renderList(list){
+    countEl.textContent = `${list.length} risultati`;
+    listEl.innerHTML = list.map(p=>`
+      <article class="product card">
+        <div class="img-wrap"><img src="${p.image}" alt="${p.name}" loading="lazy"></div>
+        ${p.tags?.includes('new')?'<div class="badge">NUOVO</div>':''}
+        ${p.tags?.includes('best-seller')?'<div class="badge" style="left:auto;right:12px">BEST</div>':''}
+        <div class="pad" style="padding:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <h3 style="margin:0;font-size:1rem">${p.name}</h3>
+            <div class="price">${money(p.price)}</div>
+          </div>
+          <div class="muted" style="font-size:.9rem;margin:6px 0 10px">${p.category}</div>
+          <div class="toolbar">
+            <button class="btn brand" data-action="add" data-id="${p.id}">Aggiungi</button>
+            <button class="btn" data-action="view" data-id="${p.id}">Dettagli</button>
+            ${p.paymentLink?`<a class="btn" href="${p.paymentLink}" target="_blank" rel="noopener">Compra ora</a>`:''}
+          </div>
+        </div>
+      </article>
+    `).join('');
+
+    // Bind bottoni card
+    listEl.querySelectorAll('[data-action="add"]').forEach(b=> b.onclick = ()=> addToCart(PRODUCTS.find(p=>p.id===b.dataset.id)));
+    listEl.querySelectorAll('[data-action="view"]').forEach(b=> b.onclick = ()=> openModal(PRODUCTS.find(p=>p.id===b.dataset.id)));
+  }
+
+  // filtro combinato
+  function applyFilters(){
+    const q = (qs('#search')?.
+
 
     // iniziale
     renderList(PRODUCTS);
