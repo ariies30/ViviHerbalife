@@ -23,11 +23,13 @@
     }
     *{box-sizing:border-box}
     html,body{margin:0;height:100%;}
-    /* Se vuoi sfondo chiaro vero, sostituisci la riga sotto con: background: var(--bg); */
-    body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,#0b1220 0%,#0a1226 100%);color:var(--text);}
+    /* Sfondo chiaro (se vuoi tornare al gradiente scuro, sostituisci con la riga commentata sotto) */
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);}
+    /* body{background:linear-gradient(180deg,#0b1220 0%,#0a1226 100%);} */
+
     a{color:inherit;text-decoration:none}
     .container{max-width:1200px;margin:0 auto;padding:24px}
-    header{position:sticky;top:0;z-index:40;background:rgba(11,18,32,.7);backdrop-filter:blur(12px);border-bottom:1px solid #1e293b}
+    header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.75);backdrop-filter:blur(12px);border-bottom:1px solid #e5e7eb}
     .nav{display:flex;align-items:center;gap:16px;}
     .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px}
     .brand-logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:grid;place-items:center;font-weight:900;color:white}
@@ -36,51 +38,52 @@
     header .brand { position: relative; z-index: 10; cursor: pointer; }
     .floating-cart { position: relative; z-index: 5; }
 
-    .nav a{padding:10px 12px;border-radius:10px;color:var(--muted)}; .nav a.active, .nav a:hover{color:var(--text);background:#111936}
+    .nav a{padding:10px 12px;border-radius:10px;color:var(--muted)}
+    .nav a.active, .nav a:hover{color:var(--text);background:#eef2ff}
     .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
     .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:center;padding:28px 0}
-    .card{background:var(--card);border:1px solid #1e293b;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+    .card{background:var(--card);border:1px solid #e5e7eb;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.06)}
     .card.pad{padding:20px}
     .muted{color:var(--muted)}
-    .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;border:1px solid #1f2b41;background:#0e162b;color:#d9e5ff;cursor:pointer;font-weight:600}
-    .btn:hover{filter:brightness(1.1)}
+    .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;border:1px solid #cbd5e1;background:#f1f5f9;color:#0f172a;cursor:pointer;font-weight:600}
+    .btn:hover{filter:brightness(0.98)}
     .btn.brand{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#06231f;border:none}
-    .btn.ghost{background:transparent;border-color:#26344f}
-    .btn.danger{background:linear-gradient(135deg,#f43f5e,#ef4444);border:none}
+    .btn.ghost{background:transparent;border-color:#cbd5e1}
+    .btn.danger{background:linear-gradient(135deg,#f43f5e,#ef4444);border:none;color:white}
     .toolbar{display:flex;gap:12px;flex-wrap:wrap}
-    .input{background:#0e162b;border:1px solid #1f2b41;border-radius:12px;padding:12px 14px;color:#d9e5ff;width:100%}
-    .pill{padding:8px 12px;border-radius:999px;border:1px solid #2a395a;background:#0e162b;color:#b8c7ea;cursor:pointer}
-    .pill.active{background:#182447;color:#fff}
+    .input{background:#f8fafc;border:1px solid #cbd5e1;border-radius:12px;padding:12px 14px;color:#0f172a;width:100%}
+    .pill{padding:8px 12px;border-radius:999px;border:1px solid #cbd5e1;background:#f8fafc;color:#334155;cursor:pointer}
+    .pill.active{background:#e2e8f0;color:#0f172a}
     .products{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
     .product{overflow:hidden;position:relative}
-    .product .img-wrap{aspect-ratio:4/3;background:#0c1429;display:grid;place-items:center;overflow:hidden;border-bottom:1px solid #1e293b}
+    .product .img-wrap{aspect-ratio:4/3;background:#e2e8f0;display:grid;place-items:center;overflow:hidden;border-bottom:1px solid #e5e7eb}
     .product img{width:100%;height:100%;object-fit:cover;display:block}
     .price{font-weight:800;font-size:1.1rem}
     .badge{position:absolute;top:12px;left:12px;background:linear-gradient(135deg,var(--accent),#f97316);color:#0a0e1a;font-weight:800;padding:6px 10px;border-radius:999px;font-size:.8rem}
     .floating-cart{position:fixed;right:24px;bottom:24px;z-index:50}
     .cart-button{position:relative}
-    .cart-count{position:absolute;top:-8px;right:-8px;background:#22c55e;color:#051413;border:2px solid #0b1220;width:26px;height:26px;display:grid;place-items:center;border-radius:50%;font-weight:800;font-size:.8rem}
-    .sidebar{position:fixed;inset:0 0 0 auto;width:380px;background:var(--card);border-left:1px solid #1e293b;transform:translateX(100%);transition:.3s ease;z-index:60;display:flex;flex-direction:column}
+    .cart-count{position:absolute;top:-8px;right:-8px;background:#22c55e;color:#051413;border:2px solid var(--bg);width:26px;height:26px;display:grid;place-items:center;border-radius:50%;font-weight:800;font-size:.8rem}
+    .sidebar{position:fixed;inset:0 0 0 auto;width:380px;background:var(--card);border-left:1px solid #e5e7eb;transform:translateX(100%);transition:.3s ease;z-index:60;display:flex;flex-direction:column}
     .sidebar.open{transform:translateX(0)}
-    .sidebar header{position:sticky;top:0;background:var(--card);padding:16px;border-bottom:1px solid #1e293b}
+    .sidebar header{position:sticky;top:0;background:var(--card);padding:16px;border-bottom:1px solid #e5e7eb}
     .cart-items{padding:16px;display:flex;flex-direction:column;gap:12px;overflow:auto}
-    .cart-row{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;background:#0d152a;border:1px solid #1f2b41;border-radius:12px;padding:8px}
-    .qty{display:inline-flex;border:1px solid #2a395a;border-radius:10px;overflow:hidden}
-    .qty button{background:#0e162b;color:#cfe1ff;border:none;padding:8px 10px;cursor:pointer}
-    .qty input{width:40px;text-align:center;background:#0e162b;border:none;color:#fff}
-    .totals{border-top:1px solid #1e293b;margin-top:auto;padding:16px;display:grid;gap:10px}
+    .cart-row{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:8px}
+    .qty{display:inline-flex;border:1px solid #cbd5e1;border-radius:10px;overflow:hidden}
+    .qty button{background:#f1f5f9;color:#0f172a;border:none;padding:8px 10px;cursor:pointer}
+    .qty input{width:40px;text-align:center;background:#f8fafc;border:none;color:#0f172a}
+    .totals{border-top:1px solid #e5e7eb;margin-top:auto;padding:16px;display:grid;gap:10px}
     .ribbon{display:flex;gap:16px;flex-wrap:wrap}
-    footer{margin-top:40px;border-top:1px solid #1e293b}
+    footer{margin-top:40px;border-top:1px solid #e5e7eb}
     .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
     .hidden{display:none!important}
-    .modal{position:fixed;inset:0;background:rgba(3,6,16,.7);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:70}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:70}
     .modal.open{display:flex}
-    .modal .dialog{width:min(920px,94vw);background:var(--card);border:1px solid #1e293b;border-radius:18px;overflow:hidden}
+    .modal .dialog{width:min(920px,94vw);background:var(--card);border:1px solid #e5e7eb;border-radius:18px;overflow:hidden}
     .dialog-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
-    .dialog-body .left{background:#0c1429}
+    .dialog-body .left{background:#e2e8f0}
     .dialog-body .right{padding:18px}
-    .chip{display:inline-flex;gap:8px;align-items:center;background:#111a31;border:1px solid #233357;color:#cfe1ff;padding:6px 10px;border-radius:999px;font-size:.85rem}
-    .notice{font-size:.9rem;color:#c8d7fb;background:#101a30;border:1px dashed #2b3a5b;padding:10px;border-radius:12px}
+    .chip{display:inline-flex;gap:8px;align-items:center;background:#f1f5f9;border:1px solid #cbd5e1;color:#0f172a;padding:6px 10px;border-radius:999px;font-size:.85rem}
+    .notice{font-size:.9rem;color:#334155;background:#f8fafc;border:1px dashed #cbd5e1;padding:10px;border-radius:12px}
     @media(max-width:980px){
       .hero{grid-template-columns:1fr;}
       .dialog-body{grid-template-columns:1fr}
@@ -140,7 +143,7 @@
   <!-- Modal Prodotto -->
   <div class="modal" id="productModal" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="dialog">
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #1e293b">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #e5e7eb">
         <strong id="modalTitle">Dettagli prodotto</strong>
         <button class="btn ghost" id="closeModal">✕</button>
       </div>
@@ -183,4 +186,141 @@
       </div>
       <div>
         <strong>Pagine</strong>
-        <ul class="
+        <ul class="muted">
+          <li><a href="#shop">Shop</a></li>
+          <li><a href="#programmi">Programmi</a></li>
+          <li><a href="#about">Chi siamo</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#policies">Policy</a></li>
+          <li><a href="#contatti">Contatti</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong>Trasparenza</strong>
+        <p class="muted" style="line-height:1.6">Questo sito è gestito da un/una Incaricato/a Indipendente. I prodotti presentati sono integratori alimentari e non sostituiscono una dieta varia ed equilibrata né uno stile di vita sano. Per condizioni mediche, consultare un professionista.</p>
+      </div>
+    </div>
+    <div class="muted" style="border-top:1px solid #e5e7eb;padding:16px 0;font-size:.9rem">© <span id="year"></span> Benessere & Nutrizione — Tutti i diritti riservati.</div>
+  </footer>
+
+  <script>
+  /********************
+   * DATI DI CONFIG   *
+   ********************/
+  const CONFIG = {
+    shopName: "Benessere & Nutrizione",
+    whatsapp: "+393479608643", // ← aggiorna con il tuo
+    email: "vivimarletta68@gmail.com",  // ← aggiorna con la tua email
+    currency: "EUR",
+  };
+
+  // Catalogo di esempio
+  const PRODUCTS = [
+    {
+      id: "f1-shake-vanilla",
+      name: "Formula 1 – Shake Vaniglia",
+      price: 35.90,
+      category: "Sostitutivi pasto",
+      image: "https://images.unsplash.com/photo-1544227382-1f03810d6f5c?q=80&w=1200&auto=format&fit=crop",
+      desc: "Frullato nutrizionale bilanciato, ideale per una colazione completa o un pasto leggero.",
+      tags: ["gluten-free"],
+      paymentLink: ""
+    },
+    {
+      id: "tea-concentrate",
+      name: "Tè alle Erbe Concentrato",
+      price: 29.50,
+      category: "Energia & Focus",
+      image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1200&auto=format&fit=crop",
+      desc: "Bevanda istantanea con estratti di tè per una sferzata di energia e concentrazione.",
+      tags: ["low-cal"],
+      paymentLink: ""
+    },
+    {
+      id: "aloe-drink",
+      name: "Aloe Drink Concentrato",
+      price: 33.00,
+      category: "Idratazione",
+      image: "https://images.unsplash.com/photo-1567121938596-d7f49e3d4f9b?q=80&w=1200&auto=format&fit=crop",
+      desc: "Concentrato a base di aloe per una bevanda rinfrescante e piacevole.",
+      tags: ["best-seller"],
+      paymentLink: ""
+    },
+    {
+      id: "protein-bites",
+      name: "Protein Bites Cacao",
+      price: 19.90,
+      category: "Snack Proteici",
+      image: "https://images.unsplash.com/photo-1604908176997-4319fb8d3d75?q=80&w=1200&auto=format&fit=crop",
+      desc: "Snack proteico al cacao perfetto on-the-go.",
+      tags: ["new"],
+      paymentLink: ""
+    },
+    {
+      id: "vitamin-complex",
+      name: "Complesso Multivitaminico",
+      price: 27.40,
+      category: "Benessere Quotidiano",
+      image: "https://images.unsplash.com/photo-1592329428385-332ae8c9e98b?q=80&w=1200&auto=format&fit=crop",
+      desc: "Supporto giornaliero con vitamine e minerali essenziali.",
+      tags: ["essentials"],
+      paymentLink: ""
+    }
+  ];
+
+  /********************
+   * UTIL             *
+   ********************/
+  const qs = (s, el=document)=>el.querySelector(s);
+  const qsa = (s, el=document)=>[...el.querySelectorAll(s)];
+  const fmt = new Intl.NumberFormat('it-IT',{style:'currency',currency:CONFIG.currency});
+  const money = v => fmt.format(v);
+
+  const store = {
+    read(){ try{return JSON.parse(localStorage.getItem('cart')||'[]')}catch{return []} },
+    write(items){ localStorage.setItem('cart', JSON.stringify(items)); updateCartCount(); }
+  }
+
+  function updateCartCount(){
+    const items = store.read();
+    const count = items.reduce((a,i)=>a+i.qty,0);
+    qs('#cartCount').textContent = count;
+  }
+
+  function addToCart(prod, qty=1){
+    const items = store.read();
+    const i = items.findIndex(x=>x.id===prod.id);
+    if(i>-1){ items[i].qty += qty } else { items.push({id:prod.id, name:prod.name, price:prod.price, image:prod.image, qty}) }
+    store.write(items);
+    renderCart();
+    openCart();
+  }
+
+  function removeFromCart(id){
+    const items = store.read().filter(x=>x.id!==id);
+    store.write(items);
+    renderCart();
+  }
+
+  function setQty(id, qty){
+    const items = store.read();
+    const i = items.findIndex(x=>x.id===id);
+    if(i>-1){ items[i].qty = Math.max(1, qty|0); store.write(items); renderCart(); }
+  }
+
+  function subtotal(){ return store.read().reduce((a,i)=>a+i.price*i.qty,0) }
+
+  function openCart(){ const s=qs('#cartSidebar'); s.classList.add('open'); s.setAttribute('aria-hidden','false'); }
+  function closeCart(){ const s=qs('#cartSidebar'); s.classList.remove('open'); s.setAttribute('aria-hidden','true'); }
+
+  function openModal(p){
+    qs('#modalTitle').textContent = p.name;
+    qs('#modalImg').src = p.image;
+    qs('#modalPrice').textContent = money(p.price);
+    qs('#modalCategory').textContent = p.category;
+    qs('#modalDesc').textContent = p.desc;
+    qs('#modalQty').value = 1;
+    const buy = qs('#modalBuy');
+    if(p.paymentLink){ buy.href = p.paymentLink; buy.classList.remove('hidden') } else { buy.href = '#'; buy.classList.add('hidden') }
+    qs('#modalAdd').onclick = ()=> addToCart(p, parseInt(qs('#modalQty').value||'1',10));
+    const modal = qs('#productModal');
