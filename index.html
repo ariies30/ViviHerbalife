@@ -381,94 +381,32 @@
    ********************/
 function renderShop(){
   const view = qs('#view');
-  // categorie e tag dinamici dal catalogo
-  const categories = [...new Set(PRODUCTS.map(p=>p.category))].sort();
-  const tags = [...new Set(PRODUCTS.flatMap(p=>p.tags||[]))].sort();
-
   view.innerHTML = `
-    <section class="layout-shop">
-      <!-- SIDEBAR FILTRI -->
-      <aside class="sidebar-filters">
-        <div class="clearline">
-          <h3 style="margin:0">Filtri</h3>
-          <button id="resetAll" class="btn ghost small">Reset</button>
+    <section class="hero">
+      <div class="card pad">
+        <h1 style="margin:0 0 6px">Nutrizione semplice, risultati reali</h1>
+        <p class="muted">Scegli tra shake, bevande energetiche, snack proteici e supporti quotidiani. Offriamo consulenza gratuita per aiutarti a definire il programma più adatto a te.</p>
+        <div class="toolbar" style="margin-top:14px">
+          <input class="input" id="search" placeholder="Cerca prodotto, categoria o parola chiave…"/>
+          <button class="btn" id="filterSnack">🍫 Snack</button>
+          <button class="btn" id="filterShake">🥤 Shake</button>
+          <button class="btn ghost" id="resetFilters">Reset</button>
         </div>
-
-        <div class="filter-group">
-          <h4>Cerca</h4>
-          <input class="input" id="search" placeholder="Nome, categoria, parola…" />
-        </div>
-
-        <div class="filter-group">
-          <h4>Categoria</h4>
-          <div id="catWrap"></div>
-        </div>
-
-        <div class="filter-group">
-          <h4>Prezzo</h4>
-          <div class="range">
-            <input class="input" id="minPrice" type="number" step="0.01" placeholder="Min" />
-            <input class="input" id="maxPrice" type="number" step="0.01" placeholder="Max" />
-          </div>
-        </div>
-
-        ${tags.length ? `
-        <div class="filter-group">
-          <h4>Tag</h4>
-          <div id="tagWrap" style="display:flex;flex-wrap:wrap;gap:8px"></div>
-        </div>` : ''}
-
-        <div class="filter-group">
-          <button id="apply" class="btn brand small" style="width:100%">Applica filtri</button>
-        </div>
-
-        <p class="muted small">Suggerimenti: puoi combinare ricerca + categorie + prezzo + tag.</p>
-      </aside>
-
-      <!-- CONTENUTO -->
-      <div>
-        <section class="card pad">
-          <div class="clearline" style="margin-bottom:12px">
-            <strong>Prodotti</strong>
-            <div class="muted" id="count"></div>
-          </div>
-          <div class="toolbar" style="margin-bottom:12px">
-            <button class="btn" id="quickSnack">🍫 Snack</button>
-            <button class="btn" id="quickShake">🥤 Shake</button>
-            <button class="btn ghost" id="quickReset">Reset rapida</button>
-          </div>
-          <div class="products" id="products"></div>
-        </section>
       </div>
+      <div class="card pad">
+        <strong>Consulenza personalizzata</strong>
+        <p class="muted">Nuovo/a? Prenota una call gratuita di 15 minuti: analizziamo le tue abitudini e ti proponiamo un piano realistico.</p>
+        <div class="ribbon"><span class="chip">Durata: 15'</span><span class="chip">Online</span></div>
+        <div style="margin-top:12px"><a href="#contatti" class="btn brand">Prenota ora</a></div>
+      </div>
+    </section>
+    <section class="card pad">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
+        <strong>Prodotti</strong>
+        <div class="muted" id="count"></div>
+      </div>
+      <div class="products" id="products"></div>
     </section>`;
-
-  // render categorie
-  const catWrap = qs('#catWrap');
-  catWrap.innerHTML = categories.map(c => `
-    <label class="filter-row">
-      <input type="checkbox" name="cat" value="${c}">
-      <span class="small">${c}</span>
-    </label>
-  `).join('');
-
-  // render tag
-  const tagWrap = qs('#tagWrap');
-  if (tagWrap) {
-    tagWrap.innerHTML = tags.map(t => `
-      <label class="pill" style="user-select:none">
-        <input type="checkbox" name="tag" value="${t}" style="display:none">
-        ${t}
-      </label>
-    `).join('');
-    // attiva stile pill su click
-    tagWrap.querySelectorAll('label.pill').forEach(lbl=>{
-      lbl.addEventListener('click', ()=>{
-        const input = lbl.querySelector('input');
-        input.checked = !input.checked;
-        lbl.classList.toggle('active', input.checked);
-      });
-    });
-  }
 
   const listEl = qs('#products');
   const countEl = qs('#count');
@@ -495,10 +433,30 @@ function renderShop(){
       </article>
     `).join('');
 
-    // Bind bottoni card
+    // Bind
     listEl.querySelectorAll('[data-action="add"]').forEach(b=> b.onclick = ()=> addToCart(PRODUCTS.find(p=>p.id===b.dataset.id)));
     listEl.querySelectorAll('[data-action="view"]').forEach(b=> b.onclick = ()=> openModal(PRODUCTS.find(p=>p.id===b.dataset.id)));
   }
+
+  // iniziale
+  renderList(PRODUCTS);
+
+  // ricerca/filtri
+  qs('#search').addEventListener('input', e=>{
+    const q = e.target.value.toLowerCase();
+    const filtered = PRODUCTS.filter(p=>
+      p.name.toLowerCase().includes(q) ||
+      p.category.toLowerCase().includes(q) ||
+      p.desc.toLowerCase().includes(q)
+    );
+    renderList(filtered);
+  });
+
+  qs('#filterSnack').onclick = ()=> renderList(PRODUCTS.filter(p=>/snack/i.test(p.category)));
+  qs('#filterShake').onclick = ()=> renderList(PRODUCTS.filter(p=>/sostitutivi/i.test(p.category)));
+  qs('#resetFilters').onclick = ()=> { qs('#search').value=''; renderList(PRODUCTS); };
+}
+
 
   // filtro combinato
   function applyFilters(){
