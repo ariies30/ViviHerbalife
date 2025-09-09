@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Benessere & Nutrizione – Shop</title>
+  <meta name="description" content="Shop indipendente di prodotti per il benessere e la nutrizione. Scopri shake, integratori e programmi personalizzati." />
+  <meta name="theme-color" content="#0ea5e9" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b1220; --card:#0f172a; --muted:#93a4c7; --text:#e6eefc; --brand:#10b981; --brand-2:#06b6d4; --accent:#f59e0b; --danger:#ef4444;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,#0b1220 0%,#0a1226 100%);color:var(--text);}
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1200px;margin:0 auto;padding:24px}
+    header{position:sticky;top:0;z-index:40;background:rgba(11,18,32,.7);backdrop-filter:blur(12px);border-bottom:1px solid #1e293b}
+    .nav{display:flex;align-items:center;gap:16px;}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px}
+    .brand-logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:grid;place-items:center;font-weight:900;color:white}
+    .nav a{padding:10px 12px;border-radius:10px;color:var(--muted)}; .nav a.active, .nav a:hover{color:var(--text);background:#111936}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:center;padding:28px 0}
+    .card{background:var(--card);border:1px solid #1e293b;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+    .card.pad{padding:20px}
+    .muted{color:var(--muted)}
+    .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;border:1px solid #1f2b41;background:#0e162b;color:#d9e5ff;cursor:pointer;font-weight:600}
+    .btn:hover{filter:brightness(1.1)}
+    .btn.brand{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#06231f;border:none}
+    .btn.ghost{background:transparent;border-color:#26344f}
+    .btn.danger{background:linear-gradient(135deg,#f43f5e,#ef4444);border:none}
+    .toolbar{display:flex;gap:12px;flex-wrap:wrap}
+    .input{background:#0e162b;border:1px solid #1f2b41;border-radius:12px;padding:12px 14px;color:#d9e5ff;width:100%}
+    .pill{padding:8px 12px;border-radius:999px;border:1px solid #2a395a;background:#0e162b;color:#b8c7ea;cursor:pointer}
+    .pill.active{background:#182447;color:#fff}
+    .products{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+    .product{overflow:hidden;position:relative}
+    .product .img-wrap{aspect-ratio:4/3;background:#0c1429;display:grid;place-items:center;overflow:hidden;border-bottom:1px solid #1e293b}
+    .product img{width:100%;height:100%;object-fit:cover;display:block}
+    .price{font-weight:800;font-size:1.1rem}
+    .badge{position:absolute;top:12px;left:12px;background:linear-gradient(135deg,var(--accent),#f97316);color:#0a0e1a;font-weight:800;padding:6px 10px;border-radius:999px;font-size:.8rem}
+    .floating-cart{position:fixed;right:24px;bottom:24px;z-index:50}
+    .cart-button{position:relative}
+    .cart-count{position:absolute;top:-8px;right:-8px;background:#22c55e;color:#051413;border:2px solid #0b1220;width:26px;height:26px;display:grid;place-items:center;border-radius:50%;font-weight:800;font-size:.8rem}
+    .sidebar{position:fixed;inset:0 0 0 auto;width:380px;background:var(--card);border-left:1px solid #1e293b;transform:translateX(100%);transition:.3s ease;z-index:60;display:flex;flex-direction:column}
+    .sidebar.open{transform:translateX(0)}
+    .sidebar header{position:sticky;top:0;background:var(--card);padding:16px;border-bottom:1px solid #1e293b}
+    .cart-items{padding:16px;display:flex;flex-direction:column;gap:12px;overflow:auto}
+    .cart-row{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;background:#0d152a;border:1px solid #1f2b41;border-radius:12px;padding:8px}
+    .qty{display:inline-flex;border:1px solid #2a395a;border-radius:10px;overflow:hidden}
+    .qty button{background:#0e162b;color:#cfe1ff;border:none;padding:8px 10px;cursor:pointer}
+    .qty input{width:40px;text-align:center;background:#0e162b;border:none;color:#fff}
+    .totals{border-top:1px solid #1e293b;margin-top:auto;padding:16px;display:grid;gap:10px}
+    .ribbon{display:flex;gap:16px;flex-wrap:wrap}
+    footer{margin-top:40px;border-top:1px solid #1e293b}
+    .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+    .hidden{display:none!important}
+    .modal{position:fixed;inset:0;background:rgba(3,6,16,.7);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:70}
+    .modal.open{display:flex}
+    .modal .dialog{width:min(920px,94vw);background:var(--card);border:1px solid #1e293b;border-radius:18px;overflow:hidden}
+    .dialog-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+    .dialog-body .left{background:#0c1429}
+    .dialog-body .right{padding:18px}
+    .chip{display:inline-flex;gap:8px;align-items:center;background:#111a31;border:1px solid #233357;color:#cfe1ff;padding:6px 10px;border-radius:999px;font-size:.85rem}
+    .notice{font-size:.9rem;color:#c8d7fb;background:#101a30;border:1px dashed #2b3a5b;padding:10px;border-radius:12px}
+    @media(max-width:980px){
+      .hero{grid-template-columns:1fr;}
+      .dialog-body{grid-template-columns:1fr}
+      .sidebar{width:min(100%,420px)}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px">
+      <div class="brand">
+        <div class="brand-logo">BN</div>
+        <div>
+          <div>Benessere & Nutrizione</div>
+          <div class="muted" style="font-size:.8rem;font-weight:600">Rivenditore indipendente*</div>
+        </div>
+      </div>
+      <nav class="nav" id="nav">
+        <a href="#shop" data-route>Shop</a>
+        <a href="#programmi" data-route>Programmi</a>
+        <a href="#about" data-route>Chi siamo</a>
+        <a href="#faq" data-route>FAQ</a>
+        <a href="#policies" data-route>Policy</a>
+        <a href="#contatti" data-route>Contatti</a>
+      </nav>
+      <div class="floating-cart">
+        <button class="btn cart-button" id="openCart" aria-label="Apri carrello">
+          🛒 Carrello
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="view">
+    <!-- Vista dinamica -->
+  </main>
+
+  <aside class="sidebar" id="cartSidebar" aria-hidden="true">
+    <header style="display:flex;align-items:center;justify-content:space-between">
+      <strong>Il tuo carrello</strong>
+      <button class="btn ghost" id="closeCart">✕</button>
+    </header>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="totals">
+      <div style="display:flex;align-items:center;justify-content:space-between"><span>Subtotale</span><strong id="subtotal">€0,00</strong></div>
+      <div class="notice">Spedizione calcolata al checkout. Puoi concludere l'ordine tramite link di pagamento o WhatsApp/email.</div>
+      <div class="toolbar">
+        <button class="btn danger" id="clearCart">Svuota</button>
+        <button class="btn brand" id="checkoutBtn">Checkout</button>
+      </div>
+      <div class="muted" style="font-size:.8rem">*Sito non ufficiale del brand. Questo shop è gestito da un/una Incaricato/a alla Vendita Indipendente.</div>
+    </div>
+  </aside>
+
+  <!-- Modal Prodotto -->
+  <div class="modal" id="productModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="dialog">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #1e293b">
+        <strong id="modalTitle">Dettagli prodotto</strong>
+        <button class="btn ghost" id="closeModal">✕</button>
+      </div>
+      <div class="dialog-body">
+        <div class="left"><img id="modalImg" alt="Immagine prodotto" style="width:100%;height:100%;object-fit:cover"/></div>
+        <div class="right">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <div class="price" id="modalPrice">€0,00</div>
+            <div class="chip" id="modalCategory">Categoria</div>
+          </div>
+          <p class="muted" id="modalDesc" style="line-height:1.6"></p>
+          <div style="display:flex;gap:10px;align-items:center;margin:10px 0">
+            <div class="qty">
+              <button type="button" data-qty="-1">−</button>
+              <input id="modalQty" value="1" inputmode="numeric" pattern="[0-9]*"/>
+              <button type="button" data-qty="1">＋</button>
+            </div>
+            <button class="btn brand" id="modalAdd">Aggiungi al carrello</button>
+            <a class="btn" id="modalBuy" target="_blank" rel="noopener">Compra ora</a>
+          </div>
+          <div class="notice">Se presente, <b>Compra ora</b> apre un link di pagamento diretto (es. Stripe Payment Link). In alternativa, aggiungi al carrello e concludi via WhatsApp/email.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="container">
+    <div class="cols" style="padding:24px 0">
+      <div>
+        <div class="brand" style="margin-bottom:10px">
+          <div class="brand-logo">BN</div>
+          <strong>Benessere & Nutrizione</strong>
+        </div>
+        <p class="muted">Soluzioni semplici per il tuo benessere quotidiano: nutrizione bilanciata, energia e idratazione. Consulenze personalizzate su richiesta.</p>
+        <div class="ribbon">
+          <span class="chip">Supporto: <a href="#contatti">contattaci</a></span>
+          <span class="chip">Instagram</span>
+          <span class="chip">Facebook</span>
+        </div>
+      </div>
+      <div>
+        <strong>Pagine</strong>
+        <ul class="muted">
+          <li><a href="#shop">Shop</a></li>
+          <li><a href="#programmi">Programmi</a></li>
+          <li><a href="#about">Chi siamo</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#policies">Policy</a></li>
+          <li><a href="#contatti">Contatti</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong>Trasparenza</strong>
+        <p class="muted" style="line-height:1.6">Questo sito è gestito da un/una Incaricato/a Indipendente. I prodotti presentati sono integratori alimentari e non sostituiscono una dieta varia ed equilibrata né uno stile di vita sano. Per condizioni mediche, consultare un professionista.</p>
+      </div>
+    </div>
+    <div class="muted" style="border-top:1px solid #1e293b;padding:16px 0;font-size:.9rem">© <span id="year"></span> Benessere & Nutrizione — Tutti i diritti riservati.</div>
+  </footer>
+
+  <script>
+  /********************
+   * DATI DI CONFIG   *
+   ********************/
+  const CONFIG = {
+    shopName: "Benessere & Nutrizione",
+    whatsapp: "+393479608643", // ← Inserisci il tuo numero in formato internazionale
+    email: "vivimarletta68@gmail.com",  // ← Inserisci l'email per gli ordini
+    currency: "EUR",
+  };
+
+  // Catalogo di esempio — sostituisci nomi, descrizioni, prezzi e immagini
+  const PRODUCTS = [
+    {
+      id: "f1-shake-vanilla",
+      name: "Formula 1 – Shake Vaniglia",
+      price: 35.90,
+      category: "Sostitutivi pasto",
+      image: "https://images.unsplash.com/photo-1544227382-1f03810d6f5c?q=80&w=1200&auto=format&fit=crop",
+      desc: "Frullato nutrizionale bilanciato, ideale per una colazione completa o un pasto leggero.",
+      tags: ["gluten-free"],
+      paymentLink: "" // es. https://buy.stripe.com/xyz
+    },
+    {
+      id: "tea-concentrate",
+      name: "Tè alle Erbe Concentrato",
+      price: 29.50,
+      category: "Energia & Focus",
+      image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1200&auto=format&fit=crop",
+      desc: "Bevanda istantanea con estratti di tè per una sferzata di energia e concentrazione.",
+      tags: ["low-cal"],
+      paymentLink: ""
+    },
+    {
+      id: "aloe-drink",
+      name: "Aloe Drink Concentrato",
+      price: 33.00,
+      category: "Idratazione",
+      image: "https://images.unsplash.com/photo-1567121938596-d7f49e3d4f9b?q=80&w=1200&auto=format&fit=crop",
+      desc: "Concentrato a base di aloe per una bevanda rinfrescante e piacevole.",
+      tags: ["best-seller"],
+      paymentLink: ""
+    },
+    {
+      id: "protein-bites",
+      name: "Protein Bites Cacao",
+      price: 19.90,
+      category: "Snack Proteici",
+      image: "https://images.unsplash.com/photo-1604908176997-4319fb8d3d75?q=80&w=1200&auto=format&fit=crop",
+      desc: "Snack proteico al cacao perfetto on-the-go.",
+      tags: ["new"],
+      paymentLink: ""
+    },
+    {
+      id: "vitamin-complex",
+      name: "Complesso Multivitaminico",
+      price: 27.40,
+      category: "Benessere Quotidiano",
+      image: "https://images.unsplash.com/photo-1592329428385-332ae8c9e98b?q=80&w=1200&auto=format&fit=crop",
+      desc: "Supporto giornaliero con vitamine e minerali essenziali.",
+      tags: ["essentials"],
+      paymentLink: ""
+    }
+  ];
+
+  /********************
+   * UTIL             *
+   ********************/
+  const qs = (s, el=document)=>el.querySelector(s);
+  const qsa = (s, el=document)=>[...el.querySelectorAll(s)];
+  const fmt = new Intl.NumberFormat('it-IT',{style:'currency',currency:CONFIG.currency});
+  const money = v => fmt.format(v);
+
+  const store = {
+    read(){ try{return JSON.parse(localStorage.getItem('cart')||'[]')}catch{return []} },
+    write(items){ localStorage.setItem('cart', JSON.stringify(items)); updateCartCount(); }
+  }
+
+  function updateCartCount(){
+    const items = store.read();
+    const count = items.reduce((a,i)=>a+i.qty,0);
+    qs('#cartCount').textContent = count;
+  }
+
+  function addToCart(prod, qty=1){
+    const items = store.read();
+    const i = items.findIndex(x=>x.id===prod.id);
+    if(i>-1){ items[i].qty += qty } else { items.push({id:prod.id, name:prod.name, price:prod.price, image:prod.image, qty}) }
+    store.write(items);
+    renderCart();
+    openCart();
+  }
+
+  function removeFromCart(id){
+    const items = store.read().filter(x=>x.id!==id);
+    store.write(items);
+    renderCart();
+  }
+
+  function setQty(id, qty){
+    const items = store.read();
+    const i = items.findIndex(x=>x.id===id);
+    if(i>-1){ items[i].qty = Math.max(1, qty|0); store.write(items); renderCart(); }
+  }
+
+  function subtotal(){ return store.read().reduce((a,i)=>a+i.price*i.qty,0) }
+
+  function openCart(){ const s=qs('#cartSidebar'); s.classList.add('open'); s.setAttribute('aria-hidden','false'); }
+  function closeCart(){ const s=qs('#cartSidebar'); s.classList.remove('open'); s.setAttribute('aria-hidden','true'); }
+
+  function openModal(p){
+    qs('#modalTitle').textContent = p.name;
+    qs('#modalImg').src = p.image;
+    qs('#modalPrice').textContent = money(p.price);
+    qs('#modalCategory').textContent = p.category;
+    qs('#modalDesc').textContent = p.desc;
+    qs('#modalQty').value = 1;
+    const buy = qs('#modalBuy');
+    if(p.paymentLink){ buy.href = p.paymentLink; buy.classList.remove('hidden') } else { buy.href = '#'; buy.classList.add('hidden') }
+    qs('#modalAdd').onclick = ()=> addToCart(p, parseInt(qs('#modalQty').value||'1',10));
+    const modal = qs('#productModal'); modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+    // qty buttons
+    qsa('[data-qty]').forEach(btn=> btn.onclick = ()=>{ const v = parseInt(qs('#modalQty').value||'1',10) + parseInt(btn.dataset.qty,10); qs('#modalQty').value = Math.max(1,v) })
+  }
+  function closeModal(){ const m=qs('#productModal'); m.classList.remove('open'); m.setAttribute('aria-hidden','true'); }
+
+  /********************
+   * ROUTER (hash)    *
+   ********************/
+  const routes = {
+    '#shop': renderShop,
+    '#programmi': renderPrograms,
+    '#about': renderAbout,
+    '#faq': renderFAQ,
+    '#policies': renderPolicies,
+    '#contatti': renderContacts,
+  };
+
+  function setActiveNav(){
+    const h = location.hash || '#shop';
+    qsa('[data-route]').forEach(a=> a.classList.toggle('active', a.getAttribute('href')===h));
+  }
+
+  window.addEventListener('hashchange', ()=>{ mount() });
+  function mount(){
+    const hash = location.hash || '#shop';
+    setActiveNav();
+    (routes[hash]||renderShop)();
+  }
+
+  /********************
+   * VISTE            *
+   ********************/
+  function renderShop(){
+    const view = qs('#view');
+    view.innerHTML = `
+      <section class="hero">
+        <div class="card pad">
+          <h1 style="margin:0 0 6px">Nutrizione semplice, risultati reali</h1>
+          <p class="muted">Scegli tra shake, bevande energetiche, snack proteici e supporti quotidiani. Offriamo consulenza gratuita per aiutarti a definire il programma più adatto a te.</p>
+          <div class="toolbar" style="margin-top:14px">
+            <input class="input" id="search" placeholder="Cerca prodotto, categoria o parola chiave…"/>
+            <button class="btn" id="filterSnack">🍫 Snack</button>
+            <button class="btn" id="filterShake">🥤 Shake</button>
+            <button class="btn ghost" id="resetFilters">Reset</button>
+          </div>
+        </div>
+        <div class="card pad">
+          <strong>Consulenza personalizzata</strong>
+          <p class="muted">Nuovo/a? Prenota una call gratuita di 15 minuti: analizziamo le tue abitudini e ti proponiamo un piano realistico.</p>
+          <div class="ribbon"><span class="chip">Durata: 15'</span><span class="chip">Online</span></div>
+          <div style="margin-top:12px"><a href="#contatti" class="btn brand">Prenota ora</a></div>
+        </div>
+      </section>
+      <section class="card pad">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
+          <strong>Prodotti</strong>
+          <div class="muted" id="count"></div>
+        </div>
+        <div class="products" id="products"></div>
+      </section>`;
+
+    const listEl = qs('#products');
+    const countEl = qs('#count');
+
+    function renderList(list){
+      countEl.textContent = `${list.length} risultati`;
+      listEl.innerHTML = list.map(p=>`
+        <article class="product card">
+          <div class="img-wrap"><img src="${p.image}" alt="${p.name}" loading="lazy"></div>
+          ${p.tags?.includes('new')?'<div class="badge">NUOVO</div>':''}
+          ${p.tags?.includes('best-seller')?'<div class="badge" style="left:auto;right:12px">BEST</div>':''}
+          <div class="pad" style="padding:14px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+              <h3 style="margin:0;font-size:1rem">${p.name}</h3>
+              <div class="price">${money(p.price)}</div>
+            </div>
+            <div class="muted" style="font-size:.9rem;margin:6px 0 10px">${p.category}</div>
+            <div class="toolbar">
+              <button class="btn brand" data-action="add" data-id="${p.id}">Aggiungi</button>
+              <button class="btn" data-action="view" data-id="${p.id}">Dettagli</button>
+              ${p.paymentLink?`<a class="btn" href="${p.paymentLink}" target="_blank" rel="noopener">Compra ora</a>`:''}
+            </div>
+          </div>
+        </article>
+      `).join('');
+
+      // Bind
+      listEl.querySelectorAll('[data-action="add"]').forEach(b=> b.onclick = ()=> addToCart(PRODUCTS.find(p=>p.id===b.dataset.id)));
+      listEl.querySelectorAll('[data-action="view"]').forEach(b=> b.onclick = ()=> openModal(PRODUCTS.find(p=>p.id===b.dataset.id)));
+    }
+
+    // iniziale
+    renderList(PRODUCTS);
+
+    // ricerca/filtri
+    qs('#search').addEventListener('input', e=>{
+      const q = e.target.value.toLowerCase();
+      const filtered = PRODUCTS.filter(p=>
+        p.name.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q) ||
+        p.desc.toLowerCase().includes(q)
+      );
+      renderList(filtered);
+    });
+
+    qs('#filterSnack').onclick = ()=> renderList(PRODUCTS.filter(p=>/snack/i.test(p.category)));
+    qs('#filterShake').onclick = ()=> renderList(PRODUCTS.filter(p=>/sostitutivi/i.test(p.category)));
+    qs('#resetFilters').onclick = ()=> { qs('#search').value=''; renderList(PRODUCTS); };
+  }
+
+  function renderPrograms(){
+    qs('#view').innerHTML = `
+      <section class="card pad">
+        <h2 style="margin-top:0">Programmi & Pacchetti</h2>
+        <p class="muted">Esempi di percorsi consigliati. Ogni programma è personalizzabile in base alle preferenze e agli obiettivi individuali.</p>
+        <div class="products" style="margin-top:10px">
+          <article class="product card pad">
+            <h3>Start 10 giorni</h3>
+            <p class="muted">Shake + Tè alle erbe + Aloe. Guida rapida e supporto via chat.</p>
+            <div class="toolbar"><a class="btn brand" href="#contatti">Richiedi preventivo</a></div>
+          </article>
+          <article class="product card pad">
+            <h3>Equilibrio quotidiano</h3>
+            <p class="muted">Multivitaminico + Snack proteici + Idratazione.</p>
+            <div class="toolbar"><a class="btn brand" href="#contatti">Richiedi preventivo</a></div>
+          </article>
+          <article class="product card pad">
+            <h3>Energia & Focus</h3>
+            <p class="muted">Bevande energizzanti e supporto alla concentrazione.</p>
+            <div class="toolbar"><a class="btn brand" href="#contatti">Richiedi preventivo</a></div>
+          </article>
+        </div>
+      </section>`;
+  }
+
+  function renderAbout(){
+    qs('#view').innerHTML = `
+      <section class="card pad">
+        <h2 style="margin-top:0">Chi siamo</h2>
+        <p class="muted">Siamo incaricati/e indipendenti e aiutiamo le persone a costruire abitudini sane con soluzioni semplici e sostenibili. Offriamo consulenze personalizzate, piani su misura e assistenza post‑acquisto.</p>
+        <ul class="muted">
+          <li>Valutazione iniziale gratuita</li>
+          <li>Piani flessibili e progressivi</li>
+          <li>Supporto via chat e materiali di educazione alimentare</li>
+        </ul>
+      </section>`;
+  }
+
+  function renderFAQ(){
+    qs('#view').innerHTML = `
+      <section class="card pad">
+        <h2 style="margin-top:0">FAQ</h2>
+        <details open>
+          <summary><strong>Gli integratori sostituiscono la dieta?</strong></summary>
+          <p class="muted">No. Gli integratori supportano una dieta varia ed equilibrata e uno stile di vita sano, ma non li sostituiscono.</p>
+        </details>
+        <details>
+          <summary><strong>Come funziona la spedizione?</strong></summary>
+          <p class="muted">Spediamo in 24‑72h lavorative. Il costo viene calcolato al checkout o fornito nel preventivo.</p>
+        </details>
+        <details>
+          <summary><strong>Posso avere un piano personalizzato?</strong></summary>
+          <p class="muted">Sì, contattaci per una breve call gratuita. Valutiamo insieme abitudini, gusti e obiettivi.</p>
+        </details>
+      </section>`;
+  }
+
+  function renderPolicies(){
+    qs('#view').innerHTML = `
+      <section class="card pad">
+        <h2 style="margin-top:0">Policy</h2>
+        <h3>Resi</h3>
+        <p class="muted">Reso entro 14 giorni su prodotti integri e non aperti. Per aprire una pratica, scrivi a <a href="mailto:${CONFIG.email}">${CONFIG.email}</a>.</p>
+        <h3>Pagamenti</h3>
+        <p class="muted">Accettiamo link di pagamento (Stripe/PayPal) e bonifico. I link diretti possono comparire sui singoli prodotti.</p>
+        <h3>Trasparenza</h3>
+        <p class="muted">Questo shop è gestito da Incaricato/a Indipendente. Le informazioni hanno scopo divulgativo e non sostituiscono il parere medico.</p>
+      </section>`;
+  }
+
+  function renderContacts(){
+    qs('#view').innerHTML = `
+      <section class="card pad">
+        <h2 style="margin-top:0">Contatti</h2>
+        <p class="muted">Scrivici su WhatsApp o via email. Rispondiamo entro poche ore nei giorni lavorativi.</p>
+        <div class="toolbar" style="margin:10px 0 20px">
+          <a class="btn brand" id="whatsContact">☎️ WhatsApp</a>
+          <a class="btn" href="mailto:${CONFIG.email}">✉️ Email</a>
+        </div>
+        <form id="leadForm" class="card pad" style="display:grid;gap:10px">
+          <strong>Richiedi una consulenza gratuita</strong>
+          <input class="input" name="name" placeholder="Nome e Cognome" required>
+          <input class="input" name="phone" placeholder="Telefono (opzionale)">
+          <input class="input" name="email" placeholder="Email" required type="email">
+          <textarea class="input" name="goal" placeholder="Il tuo obiettivo (es. colazione sana, controllo peso, energia…)" rows="4"></textarea>
+          <button class="btn brand" type="submit">Invia richiesta</button>
+        </form>
+      </section>`;
+
+    // bind WhatsApp contact
+    qs('#whatsContact').href = `https://wa.me/${CONFIG.whatsapp.replace(/[^\d]/g,'')}?text=${encodeURIComponent('Ciao! Vorrei info sui vostri prodotti/programmi.')}`;
+
+    // fake submit -> open email w/ prefilled
+    qs('#leadForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.target).entries());
+      const body = `Nome: ${data.name}%0D%0AEmail: ${data.email}%0D%0ATelefono: ${data.phone||'-'}%0D%0AObiettivo: ${data.goal||'-'}`;
+      location.href = `mailto:${CONFIG.email}?subject=Richiesta consulenza&body=${body}`;
+    });
+  }
+
+  /********************
+   * CARRELLO          *
+   ********************/
+  function renderCart(){
+    const wrap = qs('#cartItems');
+    const items = store.read();
+    wrap.innerHTML = items.length? items.map(i=>`
+      <div class="cart-row">
+        <img src="${i.image}" alt="${i.name}" style="width:64px;height:64px;object-fit:cover;border-radius:8px"/>
+        <div>
+          <div style="font-weight:600">${i.name}</div>
+          <div class="muted">${money(i.price)}</div>
+          <div class="qty" style="margin-top:6px">
+            <button onclick="setQty('${i.id}', ${i.qty-1})">−</button>
+            <input value="${i.qty}" oninput="setQty('${i.id}', this.value)"/>
+            <button onclick="setQty('${i.id}', ${i.qty+1})">＋</button>
+          </div>
+        </div>
+        <div style="display:grid;gap:8px;justify-items:end">
+          <strong>${money(i.price*i.qty)}</strong>
+          <button class="btn ghost" onclick="removeFromCart('${i.id}')">Rimuovi</button>
+        </div>
+      </div>
+    `).join('') : `<div class="notice">Il carrello è vuoto. Aggiungi prodotti dal <a href="#shop">negozio</a>.</div>`;
+
+    qs('#subtotal').textContent = money(subtotal());
+  }
+
+  // Checkout: invia riepilogo via WhatsApp o Email
+  function checkout(){
+    const items = store.read();
+    if(!items.length){ alert('Il carrello è vuoto'); return }
+    const lines = items.map(i=>`• ${i.name} × ${i.qty} — ${money(i.price*i.qty)}`).join('\n');
+    const text = `Ordine ${CONFIG.shopName}\n${lines}\nSubtotale: ${money(subtotal())}\n\nIndica indirizzo e metodo di pagamento preferito.`;
+    const wa = `https://wa.me/${CONFIG.whatsapp.replace(/[^\d]/g,'')}?text=${encodeURIComponent(text)}`;
+    // Preferisci WhatsApp: apri una nuova finestra; se bloccata, fallback email
+    const opened = window.open(wa,'_blank');
+    if(!opened){ location.href = `mailto:${CONFIG.email}?subject=Nuovo ordine&body=${encodeURIComponent(text)}`; }
+  }
+
+  /********************
+   * INIT & BIND       *
+   ********************/
+  qs('#openCart').onclick = openCart;
+  qs('#closeCart').onclick = closeCart;
+  qs('#clearCart').onclick = ()=>{ localStorage.removeItem('cart'); updateCartCount(); renderCart(); };
+  qs('#checkoutBtn').onclick = checkout;
+  qs('#closeModal').onclick = closeModal;
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ closeCart(); closeModal(); } });
+
+  // prima mount
+  updateCartCount();
+  renderCart();
+  mount();
+  qs('#year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
