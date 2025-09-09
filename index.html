@@ -579,12 +579,12 @@
   renderCart();
   mount();
   qs('#year').textContent = new Date().getFullYear();
-    // forza home se clicchi sul brand
-    qs('.brand').addEventListener('click', (e) => {
-      e.preventDefault();
-      location.hash = '#shop';
-      mount();
-    });
+// forza home se clicchi sul brand in alto a sinistra
+qs('header .brand').addEventListener('click', (e) => {
+  e.preventDefault();
+  location.hash = '#shop';
+  mount();
+});
   </script>
 </body>
 </html>
