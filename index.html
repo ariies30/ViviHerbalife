@@ -502,36 +502,31 @@
       </section>`;
   }
 
-  function renderContacts(){
-    qs('#view').innerHTML = `
-      <section class="card pad">
-        <h2 style="margin-top:0">Contatti</h2>
-        <p class="muted">Scrivimi su WhatsApp o via email. Rispondo entro poche ore nei giorni lavorativi.</p>
-        <div class="toolbar" style="margin:10px 0 20px">
-          <a class="btn brand" id="whatsContact">☎️ WhatsApp</a>
-          <a class="btn" href="mailto:${CONFIG.email}">✉️ Email</a>
-        </div>
-        <form id="leadForm" class="card pad" style="display:grid;gap:10px">
-          <strong>Richiedi una consulenza gratuita</strong>
-          <input class="input" name="name" placeholder="Nome e Cognome" required>
-          <input class="input" name="phone" placeholder="Telefono (opzionale)">
-          <input class="input" name="email" placeholder="Email" required type="email">
-          <textarea class="input" name="goal" placeholder="Il tuo obiettivo (es. colazione sana, controllo peso, energia…)" rows="4"></textarea>
-          <button class="btn brand" type="submit">Invia richiesta</button>
-        </form>
-      </section>`;
+function renderContacts(){
+  qs('#view').innerHTML = `
+    <section class="card pad">
+      <h2 style="margin-top:0">Contatti</h2>
+      <p class="muted">Scrivici direttamente su WhatsApp o via email. Puoi anche contattarci telefonicamente o seguirci sui social.</p>
+      <div class="toolbar" style="margin:10px 0 20px">
+        <a class="btn brand" id="whatsContact">☎️ WhatsApp</a>
+        <a class="btn" id="mailContact">✉️ Email</a>
+      </div>
+      <ul class="muted" style="line-height:1.8">
+        <li>📞 Telefono: <a href="tel:+393479608643">+39 347 9608643</a></li>
+        <li>📷 Instagram: <a href="https://instagram.com/tuoprofilo" target="_blank">@tuoprofilo</a></li>
+        <li>📘 Facebook: <a href="https://facebook.com/tuoprofilo" target="_blank">facebook.com/tuoprofilo</a></li>
+      </ul>
+    </section>`;
 
-    // bind WhatsApp contact
-    qs('#whatsContact').href = `https://wa.me/${CONFIG.whatsapp.replace(/[^\d]/g,'')}?text=${encodeURIComponent('Ciao! Vorrei info sui vostri prodotti/programmi.')}`;
+  // link WhatsApp
+  qs('#whatsContact').href = `https://wa.me/${CONFIG.whatsapp.replace(/[^\d]/g,'')}?text=${encodeURIComponent('Ciao! Vorrei info sui vostri prodotti/programmi.')}`;
 
-    // fake submit -> open email w/ prefilled
-    qs('#leadForm').addEventListener('submit', (e)=>{
-      e.preventDefault();
-      const data = Object.fromEntries(new FormData(e.target).entries());
-      const body = `Nome: ${data.name}%0D%0AEmail: ${data.email}%0D%0ATelefono: ${data.phone||'-'}%0D%0AObiettivo: ${data.goal||'-'}`;
-      location.href = `mailto:${CONFIG.email}?subject=Richiesta consulenza&body=${body}`;
-    });
-  }
+  // link Email
+  const subject = "Richiesta informazioni";
+  const body = "Ciao, vorrei avere maggiori informazioni sui vostri prodotti/programmi.";
+  qs('#mailContact').href = `mailto:${CONFIG.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
 
   /********************
    * CARRELLO          *
