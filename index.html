@@ -330,10 +330,6 @@ function renderShop(){
           <div id="tagWrap" style="display:flex;flex-wrap:wrap;gap:8px"></div>
         </div>` : ''}
 
-        <div class="filter-group">
-          <button id="apply" class="btn brand small" style="width:100%">Applica filtri</button>
-        </div>
-
         <p class="muted small" style="margin:0">Suggerimenti: puoi combinare ricerca + categorie + prezzo + tag.</p>
       </aside>
 
@@ -434,15 +430,77 @@ function renderShop(){
     renderList(filtered);
   }
 
-  // Applica / Reset sidebar
-  qs('#apply').addEventListener('click', applyFilters);
-  qs('#resetAll').addEventListener('click', ()=>{
-    qs('#search').value='';
-    qsa('input[name="cat"]').forEach(i=> i.checked=false);
-    qsa('input[name="tag"]').forEach(i=> { i.checked=false; i.closest('label.pill')?.classList.remove('active'); });
-    qs('#minPrice').value=''; qs('#maxPrice').value='';
-    renderList(PRODUCTS);
+  // --- filtro combinato ---
+function applyFilters(){
+  const q = (qs('#search')?.value || '').toLowerCase().trim();
+  const catSelected = qsa('input[name="cat"]:checked').map(i=>i.value);
+  const tagsSelected = qsa('input[name="tag"]:checked').map(i=>i.value);
+  const min = parseFloat(qs('#minPrice')?.value || '') || -Infinity;
+  const max = parseFloat(qs('#maxPrice')?.value || '') || Infinity;
+
+  const filtered = PRODUCTS.filter(p=>{
+    const matchText  = !q || p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q);
+    const matchCat   = !catSelected.length || catSelected.includes(p.category);
+    const matchPrice = p.price >= min && p.price <= max;
+    const matchTags  = !tagsSelected.length || (p.tags||[]).some(t=> tagsSelected.includes(t));
+    return matchText && matchCat && matchPrice && matchTags;
   });
+
+  renderList(filtered);
+}
+
+// piccola utility per non filtrare ad ogni singolo tasto
+const debounce = (fn, ms=200) => {
+  let t; return (...args) => { clearTimeout(t); t=setTimeout(()=>fn(...args), ms); };
+};
+const applyFiltersDebounced = debounce(applyFilters, 200);
+
+// 🔴 Eventi “live”
+// testo e prezzo: filtrano mentre scrivi
+qs('#search')?.addEventListener('input', applyFiltersDebounced);
+qs('#minPrice')?.addEventListener('input', applyFiltersDebounced);
+qs('#maxPrice')?.addEventListener('input', applyFiltersDebounced);
+
+// categorie: filtrano al check/uncheck
+qsa('input[name="cat"]').forEach(i => i.addEventListener('change', applyFilters));
+
+// tag-pill: quando clicchi, attivi/disattivi e filtri subito
+qsa('#tagWrap input[name="tag"]').forEach(i => i.addEventListener('change', applyFilters));
+
+// Reset “globale” della sidebar
+qs('#resetAll').addEventListener('click', ()=>{
+  qs('#search').value='';
+  qsa('input[name="cat"]').forEach(i=> i.checked=false);
+  qsa('input[name="tag"]').forEach(i=> { 
+    i.checked=false; 
+    i.closest('label.pill')?.classList.remove('active'); 
+  });
+  qs('#minPrice').value=''; 
+  qs('#maxPrice').value='';
+  renderList(PRODUCTS);
+});
+
+// Scorciatoie veloci sopra la lista (restano compatibili)
+qs('#quickSnack').onclick = ()=> { 
+  // azzera selezioni e filtra
+  qs('#search').value='';
+  qsa('input[name="cat"]').forEach(i=> i.checked=false);
+  qsa('input[name="tag"]').forEach(i=> { i.checked=false; i.closest('label.pill')?.classList.remove('active'); });
+  qs('#minPrice').value=''; qs('#maxPrice').value='';
+  renderList(PRODUCTS.filter(p=>/snack/i.test(p.category)));
+};
+qs('#quickShake').onclick = ()=> { 
+  qs('#search').value='';
+  qsa('input[name="cat"]').forEach(i=> i.checked=false);
+  qsa('input[name="tag"]').forEach(i=> { i.checked=false; i.closest('label.pill')?.classList.remove('active'); });
+  qs('#minPrice').value=''; qs('#maxPrice').value='';
+  renderList(PRODUCTS.filter(p=>/sostitutivi/i.test(p.category)));
+};
+qs('#quickReset').onclick = ()=> {
+  qs('#resetAll').click();
+};
+
+
 
   // Scorciatoie veloci sopra la lista (restano compatibili)
   qs('#quickSnack').onclick = ()=> { 
