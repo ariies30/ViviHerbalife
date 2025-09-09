@@ -579,12 +579,21 @@
   renderCart();
   mount();
   qs('#year').textContent = new Date().getFullYear();
-// forza home se clicchi sul brand in alto a sinistra
-qs('header .brand').addEventListener('click', (e) => {
-  e.preventDefault();
-  location.hash = '#shop';
-  mount();
-});
+
+  // forza home se clicchi sul brand in alto a sinistra
+  const brandLink = qs('header .brand');
+  if (brandLink) {
+    brandLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (location.hash === '#shop') {
+        // se sei già in home, forza refresh
+        mount();
+      } else {
+        location.hash = '#shop';
+      }
+    });
+  }
+
   </script>
 </body>
 </html>
