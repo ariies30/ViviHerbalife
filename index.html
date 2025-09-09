@@ -506,16 +506,16 @@ function renderContacts(){
   qs('#view').innerHTML = `
     <section class="card pad">
       <h2 style="margin-top:0">Contatti</h2>
-      <p class="muted">Scrivimi direttamente su WhatsApp o via email. Puoi anche contattarmi telefonicamente o seguirmi sui social.</p>
+      <p class="muted">Scrivici direttamente su WhatsApp o via email. Puoi anche chiamarci o seguirci sui social.</p>
       <div class="toolbar" style="margin:10px 0 20px">
         <a class="btn brand" id="whatsContact">☎️ WhatsApp</a>
         <a class="btn" id="mailContact">✉️ Email</a>
       </div>
-      <ul class="muted" style="line-height:1.8">
-        <li>📞 Telefono: <a href="tel:+393479608643">+39 347 9608643</a></li>
-        <li>📷 Instagram: <a href="https://www.instagram.com/viviana_marletta/" target="_blank">@viviana_marletta</a></li>
-        <li>📘 Facebook: <a href="https://www.facebook.com/viviana.marletta?locale=it_IT" target="_blank">facebook.com/viviana.marletta</a></li>
-      </ul>
+      <div class="ribbon" style="margin-top:16px; flex-wrap:wrap">
+        <a class="btn ghost" href="tel:+393479608643">📞 Chiama</a>
+        <a class="btn ghost" href="https://instagram.com/tuoprofilo" target="_blank">📷 Instagram</a>
+        <a class="btn ghost" href="https://facebook.com/tuoprofilo" target="_blank">📘 Facebook</a>
+      </div>
     </section>`;
 
   // link WhatsApp
@@ -526,6 +526,7 @@ function renderContacts(){
   const body = "Ciao, vorrei avere maggiori informazioni sui vostri prodotti/programmi.";
   qs('#mailContact').href = `mailto:${CONFIG.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
+
 
 
   /********************
