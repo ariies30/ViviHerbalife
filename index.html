@@ -1,77 +1,186 @@
-function renderShop(){
-  const view = qs('#view');
-  view.innerHTML = `
-    <section class="hero">
-      <div class="card pad">
-        <h1 style="margin:0 0 6px">Nutrizione semplice, risultati reali</h1>
-        <p class="muted">Scegli tra shake, bevande energetiche, snack proteici e supporti quotidiani. Offriamo consulenza gratuita per aiutarti a definire il programma più adatto a te.</p>
-        <div class="toolbar" style="margin-top:14px">
-          <input class="input" id="search" placeholder="Cerca prodotto, categoria o parola chiave…"/>
-          <button class="btn" id="filterSnack">🍫 Snack</button>
-          <button class="btn" id="filterShake">🥤 Shake</button>
-          <button class="btn ghost" id="resetFilters">Reset</button>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Benessere & Nutrizione – Shop</title>
+  <meta name="description" content="Shop indipendente di prodotti per il benessere e la nutrizione. Scopri shake, integratori e programmi personalizzati." />
+  <meta name="theme-color" content="#0ea5e9" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      /* —— PALETTE CHIARA —— */
+      --bg: #f3f9f6;        /* sfondo chiaro */
+      --card: #ffffff;      /* sfondo card bianco */
+      --muted: #6b7280;     /* testo attenuato grigio */
+      --text: #1f2937;      /* testo principale grigio scuro */
+      --brand: #4caf50;     /* verde naturale */
+      --brand-2: #8bc34a;   /* verde chiaro */
+      --accent: #ffb300;    /* accento giallo miele */
+      --danger: #e53935;    /* rosso */
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;}
+    /* Se vuoi sfondo chiaro vero, sostituisci la riga sotto con: background: var(--bg); */
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,#0b1220 0%,#0a1226 100%);color:var(--text);}
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1200px;margin:0 auto;padding:24px}
+    header{position:sticky;top:0;z-index:40;background:rgba(11,18,32,.7);backdrop-filter:blur(12px);border-bottom:1px solid #1e293b}
+    .nav{display:flex;align-items:center;gap:16px;}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px}
+    .brand-logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:grid;place-items:center;font-weight:900;color:white}
+
+    /* 🔧 Fix: brand sempre cliccabile e sopra gli altri elementi */
+    header .brand { position: relative; z-index: 10; cursor: pointer; }
+    .floating-cart { position: relative; z-index: 5; }
+
+    .nav a{padding:10px 12px;border-radius:10px;color:var(--muted)}; .nav a.active, .nav a:hover{color:var(--text);background:#111936}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:center;padding:28px 0}
+    .card{background:var(--card);border:1px solid #1e293b;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+    .card.pad{padding:20px}
+    .muted{color:var(--muted)}
+    .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;border:1px solid #1f2b41;background:#0e162b;color:#d9e5ff;cursor:pointer;font-weight:600}
+    .btn:hover{filter:brightness(1.1)}
+    .btn.brand{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#06231f;border:none}
+    .btn.ghost{background:transparent;border-color:#26344f}
+    .btn.danger{background:linear-gradient(135deg,#f43f5e,#ef4444);border:none}
+    .toolbar{display:flex;gap:12px;flex-wrap:wrap}
+    .input{background:#0e162b;border:1px solid #1f2b41;border-radius:12px;padding:12px 14px;color:#d9e5ff;width:100%}
+    .pill{padding:8px 12px;border-radius:999px;border:1px solid #2a395a;background:#0e162b;color:#b8c7ea;cursor:pointer}
+    .pill.active{background:#182447;color:#fff}
+    .products{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+    .product{overflow:hidden;position:relative}
+    .product .img-wrap{aspect-ratio:4/3;background:#0c1429;display:grid;place-items:center;overflow:hidden;border-bottom:1px solid #1e293b}
+    .product img{width:100%;height:100%;object-fit:cover;display:block}
+    .price{font-weight:800;font-size:1.1rem}
+    .badge{position:absolute;top:12px;left:12px;background:linear-gradient(135deg,var(--accent),#f97316);color:#0a0e1a;font-weight:800;padding:6px 10px;border-radius:999px;font-size:.8rem}
+    .floating-cart{position:fixed;right:24px;bottom:24px;z-index:50}
+    .cart-button{position:relative}
+    .cart-count{position:absolute;top:-8px;right:-8px;background:#22c55e;color:#051413;border:2px solid #0b1220;width:26px;height:26px;display:grid;place-items:center;border-radius:50%;font-weight:800;font-size:.8rem}
+    .sidebar{position:fixed;inset:0 0 0 auto;width:380px;background:var(--card);border-left:1px solid #1e293b;transform:translateX(100%);transition:.3s ease;z-index:60;display:flex;flex-direction:column}
+    .sidebar.open{transform:translateX(0)}
+    .sidebar header{position:sticky;top:0;background:var(--card);padding:16px;border-bottom:1px solid #1e293b}
+    .cart-items{padding:16px;display:flex;flex-direction:column;gap:12px;overflow:auto}
+    .cart-row{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;background:#0d152a;border:1px solid #1f2b41;border-radius:12px;padding:8px}
+    .qty{display:inline-flex;border:1px solid #2a395a;border-radius:10px;overflow:hidden}
+    .qty button{background:#0e162b;color:#cfe1ff;border:none;padding:8px 10px;cursor:pointer}
+    .qty input{width:40px;text-align:center;background:#0e162b;border:none;color:#fff}
+    .totals{border-top:1px solid #1e293b;margin-top:auto;padding:16px;display:grid;gap:10px}
+    .ribbon{display:flex;gap:16px;flex-wrap:wrap}
+    footer{margin-top:40px;border-top:1px solid #1e293b}
+    .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+    .hidden{display:none!important}
+    .modal{position:fixed;inset:0;background:rgba(3,6,16,.7);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:70}
+    .modal.open{display:flex}
+    .modal .dialog{width:min(920px,94vw);background:var(--card);border:1px solid #1e293b;border-radius:18px;overflow:hidden}
+    .dialog-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+    .dialog-body .left{background:#0c1429}
+    .dialog-body .right{padding:18px}
+    .chip{display:inline-flex;gap:8px;align-items:center;background:#111a31;border:1px solid #233357;color:#cfe1ff;padding:6px 10px;border-radius:999px;font-size:.85rem}
+    .notice{font-size:.9rem;color:#c8d7fb;background:#101a30;border:1px dashed #2b3a5b;padding:10px;border-radius:12px}
+    @media(max-width:980px){
+      .hero{grid-template-columns:1fr;}
+      .dialog-body{grid-template-columns:1fr}
+      .sidebar{width:min(100%,420px)}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px">
+      <!-- Brand → sempre link alla home -->
+      <a href="#shop" class="brand" style="text-decoration:none; color:inherit">
+        <div class="brand-logo">BN</div>
+        <div>
+          <div>Benessere & Nutrizione</div>
+          <div class="muted" style="font-size:.8rem;font-weight:600">Rivenditore indipendente*</div>
+        </div>
+      </a>
+      <nav class="nav" id="nav">
+        <a href="#shop" data-route>Shop</a>
+        <a href="#programmi" data-route>Programmi</a>
+        <a href="#about" data-route>Chi siamo</a>
+        <a href="#faq" data-route>FAQ</a>
+        <a href="#policies" data-route>Policy</a>
+        <a href="#contatti" data-route>Contatti</a>
+      </nav>
+      <div class="floating-cart">
+        <button class="btn cart-button" id="openCart" aria-label="Apri carrello">
+          🛒 Carrello
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="view">
+    <!-- Vista dinamica -->
+  </main>
+
+  <aside class="sidebar" id="cartSidebar" aria-hidden="true">
+    <header style="display:flex;align-items:center;justify-content:space-between">
+      <strong>Il tuo carrello</strong>
+      <button class="btn ghost" id="closeCart">✕</button>
+    </header>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="totals">
+      <div style="display:flex;align-items:center;justify-content:space-between"><span>Subtotale</span><strong id="subtotal">€0,00</strong></div>
+      <div class="notice">Spedizione calcolata al checkout. Puoi concludere l'ordine tramite link di pagamento o WhatsApp/email.</div>
+      <div class="toolbar">
+        <button class="btn danger" id="clearCart">Svuota</button>
+        <button class="btn brand" id="checkoutBtn">Checkout</button>
+      </div>
+      <div class="muted" style="font-size:.8rem">*Sito non ufficiale del brand. Questo shop è gestito da un/una Incaricato/a alla Vendita Indipendente.</div>
+    </div>
+  </aside>
+
+  <!-- Modal Prodotto -->
+  <div class="modal" id="productModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="dialog">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #1e293b">
+        <strong id="modalTitle">Dettagli prodotto</strong>
+        <button class="btn ghost" id="closeModal">✕</button>
+      </div>
+      <div class="dialog-body">
+        <div class="left"><img id="modalImg" alt="Immagine prodotto" style="width:100%;height:100%;object-fit:cover"/></div>
+        <div class="right">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <div class="price" id="modalPrice">€0,00</div>
+            <div class="chip" id="modalCategory">Categoria</div>
+          </div>
+          <p class="muted" id="modalDesc" style="line-height:1.6"></p>
+          <div style="display:flex;gap:10px;align-items:center;margin:10px 0">
+            <div class="qty">
+              <button type="button" data-qty="-1">−</button>
+              <input id="modalQty" value="1" inputmode="numeric" pattern="[0-9]*"/>
+              <button type="button" data-qty="1">＋</button>
+            </div>
+            <button class="btn brand" id="modalAdd">Aggiungi al carrello</button>
+            <a class="btn" id="modalBuy" target="_blank" rel="noopener">Compra ora</a>
+          </div>
+          <div class="notice">Se presente, <b>Compra ora</b> apre un link di pagamento diretto (es. Stripe Payment Link). In alternativa, aggiungi al carrello e concludi via WhatsApp/email.</div>
         </div>
       </div>
-      <div class="card pad">
-        <strong>Consulenza personalizzata</strong>
-        <p class="muted">Nuovo/a? Prenota una call gratuita di 15 minuti: analizziamo le tue abitudini e ti proponiamo un piano realistico.</p>
-        <div class="ribbon"><span class="chip">Durata: 15'</span><span class="chip">Online</span></div>
-        <div style="margin-top:12px"><a href="#contatti" class="btn brand">Prenota ora</a></div>
-      </div>
-    </section>
-    <section class="card pad">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
-        <strong>Prodotti</strong>
-        <div class="muted" id="count"></div>
-      </div>
-      <div class="products" id="products"></div>
-    </section>`;
+    </div>
+  </div>
 
-  const listEl = qs('#products');
-  const countEl = qs('#count');
-
-  function renderList(list){
-    countEl.textContent = `${list.length} risultati`;
-    listEl.innerHTML = list.map(p=>`
-      <article class="product card">
-        <div class="img-wrap"><img src="${p.image}" alt="${p.name}" loading="lazy"></div>
-        ${p.tags?.includes('new')?'<div class="badge">NUOVO</div>':''}
-        ${p.tags?.includes('best-seller')?'<div class="badge" style="left:auto;right:12px">BEST</div>':''}
-        <div class="pad" style="padding:14px">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-            <h3 style="margin:0;font-size:1rem">${p.name}</h3>
-            <div class="price">${money(p.price)}</div>
-          </div>
-          <div class="muted" style="font-size:.9rem;margin:6px 0 10px">${p.category}</div>
-          <div class="toolbar">
-            <button class="btn brand" data-action="add" data-id="${p.id}">Aggiungi</button>
-            <button class="btn" data-action="view" data-id="${p.id}">Dettagli</button>
-            ${p.paymentLink?`<a class="btn" href="${p.paymentLink}" target="_blank" rel="noopener">Compra ora</a>`:''}
-          </div>
+  <footer class="container">
+    <div class="cols" style="padding:24px 0">
+      <div>
+        <div class="brand" style="margin-bottom:10px">
+          <div class="brand-logo">BN</div>
+          <strong>Benessere & Nutrizione</strong>
         </div>
-      </article>
-    `).join('');
-
-    // Bind
-    listEl.querySelectorAll('[data-action="add"]').forEach(b=> b.onclick = ()=> addToCart(PRODUCTS.find(p=>p.id===b.dataset.id)));
-    listEl.querySelectorAll('[data-action="view"]').forEach(b=> b.onclick = ()=> openModal(PRODUCTS.find(p=>p.id===b.dataset.id)));
-  }
-
-  // iniziale
-  renderList(PRODUCTS);
-
-  // ricerca/filtri
-  qs('#search').addEventListener('input', e=>{
-    const q = e.target.value.toLowerCase();
-    const filtered = PRODUCTS.filter(p=>
-      p.name.toLowerCase().includes(q) ||
-      p.category.toLowerCase().includes(q) ||
-      p.desc.toLowerCase().includes(q)
-    );
-    renderList(filtered);
-  });
-
-  qs('#filterSnack').onclick = ()=> renderList(PRODUCTS.filter(p=>/snack/i.test(p.category)));
-  qs('#filterShake').onclick = ()=> renderList(PRODUCTS.filter(p=>/sostitutivi/i.test(p.category)));
-  qs('#resetFilters').onclick = ()=> { qs('#search').value=''; renderList(PRODUCTS); };
-}
+        <p class="muted">Soluzioni semplici per il tuo benessere quotidiano: nutrizione bilanciata, energia e idratazione. Consulenze personalizzate su richiesta.</p>
+        <div class="ribbon">
+          <span class="chip">Supporto: <a href="#contatti">contattaci</a></span>
+          <span class="chip">Instagram</span>
+          <span class="chip">Facebook</span>
+        </div>
+      </div>
+      <div>
+        <strong>Pagine</strong>
+        <ul class="
