@@ -146,9 +146,30 @@ footer{margin-top:40px;border-top:1px solid #e5e7eb}
     bottom: 10px; /* più basso, evita che esca fuori */
   }
 }
+  /* Imposta i campi prezzo con minimo 0 */
+#minPrice,
+#maxPrice {
+  min: 0; /* vieta valori negativi */
+}
 
+/* Ingrandisce le frecce (browser WebKit/Chromium) */
+#minPrice::-webkit-inner-spin-button,
+#maxPrice::-webkit-inner-spin-button,
+#minPrice::-webkit-outer-spin-button,
+#maxPrice::-webkit-outer-spin-button {
+  transform: scale(1.4); /* aumenta la dimensione */
+  margin: 0 2px; /* aggiusta lo spazio */
+}
 
-
+/* Per Firefox */
+#minPrice,
+#maxPrice {
+  -moz-appearance: textfield; /* rimuove lo stile base */
+}
+#minPrice::-moz-number-spin-box,
+#maxPrice::-moz-number-spin-box {
+  transform: scale(1.3);
+}
 </style>
 </head>
 <body>
