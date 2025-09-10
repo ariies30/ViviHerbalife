@@ -137,14 +137,8 @@ footer{margin-top:40px;border-top:1px solid #e5e7eb}
 .floating-cart {
   position: fixed;
   right: 24px;
-  bottom: 44px; /* posizione di default */
-}
-
-/* Se l’altezza dello schermo è inferiore a 700px (es. alcuni telefoni) */
-@media (max-height: 700px) {
-  .floating-cart {
-    bottom: 10px; /* più basso, evita che esca fuori */
-  }
+  bottom: 20px; /* più in basso e sempre visibile */
+  z-index: 100; /* assicura che stia sopra tutto */
 }
   /* Imposta i campi prezzo con minimo 0 */
 #minPrice,
