@@ -433,12 +433,10 @@ function renderShop(){
       <article class="product card">
       <div class="img-wrap" style="cursor:pointer" data-action="view" data-id="${p.id}">
       <img src="${p.image}" alt="${p.name}" loading="lazy">
-      <div class="badge-wrap">
+      </div>
         ${p.tags?.includes('new')?'<div class="badge">NUOVO</div>':''}
         ${p.tags?.includes('best-seller')?'<div class="badge">BEST</div>':''}
         ${p.tags?.includes('offer')?'<div class="badge">OFFERTA</div>':''}
-        </div>
-        </div>
         <div class="pad" style="padding:14px">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
             <h3 style="margin:0;font-size:1rem;cursor:pointer" data-action="view" data-id="${p.id}">
