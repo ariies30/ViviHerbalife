@@ -415,10 +415,15 @@ function renderShop(){
     listEl.innerHTML = list.map(p=>`
       <article class="product card">
       <div class="img-wrap" style="cursor:pointer" data-action="view" data-id="${p.id}">
+      <div class="img-wrap">
       <img src="${p.image}" alt="${p.name}" loading="lazy">
+      <div class="badge-wrap">
+      ${p.tags?.includes('new')?'<span class="badge">NUOVO</span>':''}
+      ${p.tags?.includes('best-seller')?'<span class="badge">BEST</span>':''}
+      ${p.tags?.includes('offer')?'<span class="badge">OFFERTA</span>':''}
       </div>
-        ${p.tags?.includes('new')?'<div class="badge">NUOVO</div>':''}
-        ${p.tags?.includes('best-seller')?'<div class="badge" style="left:auto;right:12px">BEST</div>':''}
+      </div>
+
         <div class="pad" style="padding:14px">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
             <h3 style="margin:0;font-size:1rem;cursor:pointer" data-action="view" data-id="${p.id}">
