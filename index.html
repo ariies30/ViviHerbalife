@@ -131,6 +131,12 @@ footer{margin-top:40px;border-top:1px solid #e5e7eb}
   font-size: .8rem;
   box-shadow: 0 2px 6px rgba(0,0,0,.25);
 }
+  .btn.active {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+
 </style>
 </head>
 <body>
@@ -332,7 +338,6 @@ function setActiveNav(){ const h=location.hash||'#shop'; qsa('[data-route]').for
 window.addEventListener('hashchange', mount);
 function mount(){ const hash=location.hash||'#shop'; setActiveNav(); (routes[hash]||renderShop)(); }
 
-/*** VISTE ***/
 function renderShop(){
   const view = qs('#view');
 
@@ -385,10 +390,10 @@ function renderShop(){
             <div class="muted" id="count"></div>
           </div>
           <div class="toolbar" style="margin-bottom:12px">
-          <button class="btn" id="quickNew">🆕 Novità</button>
-          <button class="btn" id="quickOffer">🔥 Offerte</button>
-          <button class="btn" id="quickBest">🏆 Best Seller</button>
-          <button class="btn ghost" id="quickReset">Reset</button>
+            <button class="btn" id="quickNew">🆕 Novità</button>
+            <button class="btn" id="quickOffer">🔥 Offerte</button>
+            <button class="btn" id="quickBest">🏆 Best Seller</button>
+            <button class="btn ghost" id="quickReset">Reset</button>
           </div>
 
           <div class="products" id="products"></div>
@@ -431,16 +436,18 @@ function renderShop(){
     countEl.textContent = `${list.length} risultati`;
     listEl.innerHTML = list.map(p=>`
       <article class="product card">
-      <div class="img-wrap" style="cursor:pointer" data-action="view" data-id="${p.id}">
-      <img src="${p.image}" alt="${p.name}" loading="lazy">
-      </div>
-        ${p.tags?.includes('new')?'<div class="badge">NUOVO</div>':''}
-        ${p.tags?.includes('best-seller')?'<div class="badge">BEST</div>':''}
-        ${p.tags?.includes('offer')?'<div class="badge">OFFERTA</div>':''}
+        <div class="img-wrap" style="cursor:pointer" data-action="view" data-id="${p.id}">
+          <img src="${p.image}" alt="${p.name}" loading="lazy">
+          <div class="badge-wrap">
+            ${p.tags?.includes('new') ? '<span class="badge">NUOVO</span>' : ''}
+            ${p.tags?.includes('best-seller') ? '<span class="badge">BEST</span>' : ''}
+            ${p.tags?.includes('offer') ? '<span class="badge">OFFERTA</span>' : ''}
+          </div>
+        </div>
         <div class="pad" style="padding:14px">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
             <h3 style="margin:0;font-size:1rem;cursor:pointer" data-action="view" data-id="${p.id}">
-            ${p.name}
+              ${p.name}
             </h3>
             <div class="price">${money(p.price)}</div>
           </div>
@@ -467,6 +474,13 @@ function renderShop(){
     const q = (qs('#search')?.value || '').toLowerCase().trim();
     const catSelected = qsa('input[name="cat"]:checked').map(i=>i.value);
     const tagsSelected = qsa('input[name="tag"]:checked').map(i=>i.value);
+
+    // pulsanti rapidi attivi
+    const quickTags = [];
+    if (qs('#quickNew').classList.contains('active')) quickTags.push('new');
+    if (qs('#quickOffer').classList.contains('active')) quickTags.push('offer');
+    if (qs('#quickBest').classList.contains('active')) quickTags.push('best-seller');
+
     const min = parseFloat(qs('#minPrice')?.value || '') || -Infinity;
     const max = parseFloat(qs('#maxPrice')?.value || '') || Infinity;
 
@@ -474,80 +488,52 @@ function renderShop(){
       const matchText = !q || p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q);
       const matchCat = !catSelected.length || catSelected.includes(p.category);
       const matchPrice = p.price >= min && p.price <= max;
-      const matchTags = !tagsSelected.length || (p.tags||[]).some(t=> tagsSelected.includes(t));
-      return matchText && matchCat && matchPrice && matchTags;
+      const matchTags = [...tagsSelected, ...quickTags];
+      const matchAnyTag = !matchTags.length || (p.tags||[]).some(t=> matchTags.includes(t));
+      return matchText && matchCat && matchPrice && matchAnyTag;
     });
 
     renderList(filtered);
   }
 
-  // --- filtro combinato ---
-function applyFilters(){
-  const q = (qs('#search')?.value || '').toLowerCase().trim();
-  const catSelected = qsa('input[name="cat"]:checked').map(i=>i.value);
-  const tagsSelected = qsa('input[name="tag"]:checked').map(i=>i.value);
-  const min = parseFloat(qs('#minPrice')?.value || '') || -Infinity;
-  const max = parseFloat(qs('#maxPrice')?.value || '') || Infinity;
+  // Eventi sidebar
+  const debounce = (fn, ms=200) => { let t; return (...args) => { clearTimeout(t); t=setTimeout(()=>fn(...args), ms); }; };
+  const applyFiltersDebounced = debounce(applyFilters, 200);
 
-  const filtered = PRODUCTS.filter(p=>{
-    const matchText  = !q || p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q);
-    const matchCat   = !catSelected.length || catSelected.includes(p.category);
-    const matchPrice = p.price >= min && p.price <= max;
-    const matchTags  = !tagsSelected.length || (p.tags||[]).some(t=> tagsSelected.includes(t));
-    return matchText && matchCat && matchPrice && matchTags;
+  qs('#search')?.addEventListener('input', applyFiltersDebounced);
+  qs('#minPrice')?.addEventListener('input', applyFiltersDebounced);
+  qs('#maxPrice')?.addEventListener('input', applyFiltersDebounced);
+  qsa('input[name="cat"]').forEach(i => i.addEventListener('change', applyFilters));
+  qsa('#tagWrap input[name="tag"]').forEach(i => i.addEventListener('change', applyFilters));
+
+  // Gestione pulsanti rapidi
+  ['#quickNew','#quickOffer','#quickBest'].forEach(sel=>{
+    qs(sel).addEventListener('click', e=>{
+      e.target.classList.toggle('active');
+      applyFilters();
+    });
   });
 
-  renderList(filtered);
-}
-
-// piccola utility per non filtrare ad ogni singolo tasto
-const debounce = (fn, ms=200) => {
-  let t; return (...args) => { clearTimeout(t); t=setTimeout(()=>fn(...args), ms); };
-};
-const applyFiltersDebounced = debounce(applyFilters, 200);
-
-// 🔴 Eventi “live”
-// testo e prezzo: filtrano mentre scrivi
-qs('#search')?.addEventListener('input', applyFiltersDebounced);
-qs('#minPrice')?.addEventListener('input', applyFiltersDebounced);
-qs('#maxPrice')?.addEventListener('input', applyFiltersDebounced);
-
-// categorie: filtrano al check/uncheck
-qsa('input[name="cat"]').forEach(i => i.addEventListener('change', applyFilters));
-
-// tag-pill: quando clicchi, attivi/disattivi e filtri subito
-qsa('#tagWrap input[name="tag"]').forEach(i => i.addEventListener('change', applyFilters));
-
-// Reset “globale” della sidebar
-qs('#resetAll').addEventListener('click', ()=>{
-  qs('#search').value='';
-  qsa('input[name="cat"]').forEach(i=> i.checked=false);
-  qsa('input[name="tag"]').forEach(i=> { 
-    i.checked=false; 
-    i.closest('label.pill')?.classList.remove('active'); 
+  // Reset sidebar + pulsanti rapidi
+  qs('#resetAll').addEventListener('click', ()=>{
+    qs('#search').value='';
+    qsa('input[name="cat"]').forEach(i=> i.checked=false);
+    qsa('input[name="tag"]').forEach(i=> { 
+      i.checked=false; 
+      i.closest('label.pill')?.classList.remove('active'); 
+    });
+    qs('#minPrice').value=''; 
+    qs('#maxPrice').value='';
+    ['#quickNew','#quickOffer','#quickBest'].forEach(sel=>qs(sel).classList.remove('active'));
+    renderList(PRODUCTS);
   });
-  qs('#minPrice').value=''; 
-  qs('#maxPrice').value='';
-  renderList(PRODUCTS);
-});
 
-// Scorciatoie veloci sopra la lista (restano compatibili)
-qs('#quickNew').onclick = ()=> { 
-  renderList(PRODUCTS.filter(p => (p.tags||[]).includes('new')));
-};
-
-qs('#quickOffer').onclick = ()=> { 
-  renderList(PRODUCTS.filter(p => (p.tags||[]).includes('offer')));
-};
-
-qs('#quickBest').onclick = ()=> { 
-  renderList(PRODUCTS.filter(p => (p.tags||[]).includes('best-seller')));
-};
-
-qs('#quickReset').onclick = ()=> { 
-  renderList(PRODUCTS);
-};
+  qs('#quickReset').addEventListener('click', ()=>{
+    ['#quickNew','#quickOffer','#quickBest'].forEach(sel=>qs(sel).classList.remove('active'));
+    renderList(PRODUCTS);
+  });
 }
+
 
 function renderPrograms(){
   qs('#view').innerHTML=`
