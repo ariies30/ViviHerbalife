@@ -365,10 +365,12 @@ function renderShop(){
             <div class="muted" id="count"></div>
           </div>
           <div class="toolbar" style="margin-bottom:12px">
-            <button class="btn" id="quickSnack">🍫 Snack</button>
-            <button class="btn" id="quickShake">🥤 Shake</button>
-            <button class="btn ghost" id="quickReset">Reset rapida</button>
+          <button class="btn" id="quickNew">🆕 Novità</button>
+          <button class="btn" id="quickOffer">🔥 Offerte</button>
+          <button class="btn" id="quickBest">🏆 Best Seller</button>
+          <button class="btn ghost" id="quickReset">Reset</button>
           </div>
+
           <div class="products" id="products"></div>
         </section>
       </div>
@@ -509,43 +511,21 @@ qs('#resetAll').addEventListener('click', ()=>{
 });
 
 // Scorciatoie veloci sopra la lista (restano compatibili)
-qs('#quickSnack').onclick = ()=> { 
-  // azzera selezioni e filtra
-  qs('#search').value='';
-  qsa('input[name="cat"]').forEach(i=> i.checked=false);
-  qsa('input[name="tag"]').forEach(i=> { i.checked=false; i.closest('label.pill')?.classList.remove('active'); });
-  qs('#minPrice').value=''; qs('#maxPrice').value='';
-  renderList(PRODUCTS.filter(p=>/snack/i.test(p.category)));
-};
-qs('#quickShake').onclick = ()=> { 
-  qs('#search').value='';
-  qsa('input[name="cat"]').forEach(i=> i.checked=false);
-  qsa('input[name="tag"]').forEach(i=> { i.checked=false; i.closest('label.pill')?.classList.remove('active'); });
-  qs('#minPrice').value=''; qs('#maxPrice').value='';
-  renderList(PRODUCTS.filter(p=>/sostitutivi/i.test(p.category)));
-};
-qs('#quickReset').onclick = ()=> {
-  qs('#resetAll').click();
+qs('#quickNew').onclick = ()=> { 
+  renderList(PRODUCTS.filter(p => (p.tags||[]).includes('new')));
 };
 
+qs('#quickOffer').onclick = ()=> { 
+  renderList(PRODUCTS.filter(p => (p.tags||[]).includes('offer')));
+};
 
+qs('#quickBest').onclick = ()=> { 
+  renderList(PRODUCTS.filter(p => (p.tags||[]).includes('best-seller')));
+};
 
-  // Scorciatoie veloci sopra la lista (restano compatibili)
-  qs('#quickSnack').onclick = ()=> { 
-    qsa('input[name="cat"]').forEach(i=> i.checked=false);
-    renderList(PRODUCTS.filter(p=>/snack/i.test(p.category)));
-  };
-  qs('#quickShake').onclick = ()=> { 
-    qsa('input[name="cat"]').forEach(i=> i.checked=false);
-    renderList(PRODUCTS.filter(p=>/sostitutivi/i.test(p.category)));
-  };
-  qs('#quickReset').onclick = ()=> {
-    qs('#search').value='';
-    qsa('input[name="cat"]').forEach(i=> i.checked=false);
-    qsa('input[name="tag"]').forEach(i=> { i.checked=false; i.closest('label.pill')?.classList.remove('active'); });
-    qs('#minPrice').value=''; qs('#maxPrice').value='';
-    renderList(PRODUCTS);
-  };
+qs('#quickReset').onclick = ()=> { 
+  renderList(PRODUCTS);
+};
 }
 
 function renderPrograms(){
