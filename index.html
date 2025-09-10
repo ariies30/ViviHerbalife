@@ -406,11 +406,6 @@ function renderShop(){
           </div>
         </div>
 
-        ${tags.length ? `
-        <div class="filter-group">
-          <h4>Tag</h4>
-          <div id="tagWrap" style="display:flex;flex-wrap:wrap;gap:8px"></div>
-        </div>` : ''}
 
         <p class="muted small" style="margin:0">Suggerimenti: puoi combinare ricerca + categorie + prezzo.</p>
       </aside>
@@ -442,24 +437,6 @@ function renderShop(){
       <span class="small">${c}</span>
     </label>
   `).join('');
-
-  const tagWrap = qs('#tagWrap');
-  if (tagWrap) {
-    tagWrap.innerHTML = tags.map(t => `
-      <label class="pill" style="user-select:none">
-        <input type="checkbox" name="tag" value="${t}" style="display:none">
-        ${t}
-      </label>
-    `).join('');
-    // stile attivo sui tag-pill
-    tagWrap.querySelectorAll('label.pill').forEach(lbl=>{
-      lbl.addEventListener('click', ()=>{
-        const input = lbl.querySelector('input');
-        input.checked = !input.checked;
-        lbl.classList.toggle('active', input.checked);
-      });
-    });
-  }
 
   // --- render list ---
   const listEl = qs('#products');
