@@ -184,6 +184,16 @@ footer{margin-top:40px;border-top:1px solid #e5e7eb}
       <a href="#policies" data-route>Policy</a>
       <a href="#contatti" data-route>Contatti</a>
     </nav>
+    <nav class="nav" id="nav">
+  <a href="#home" data-route>Home</a>
+  <a href="#shop" data-route>Shop</a>
+  <a href="#programmi" data-route>Programmi</a>
+  <a href="#about" data-route>Chi siamo</a>
+  <a href="#faq" data-route>FAQ</a>
+  <a href="#policies" data-route>Policy</a>
+  <a href="#contatti" data-route>Contatti</a>
+    </nav>
+
     <div class="floating-cart">
       <button class="btn cart-button" id="openCart" aria-label="Apri carrello">🛒 Carrello <span class="cart-count" id="cartCount">0</span></button>
     </div>
@@ -354,6 +364,7 @@ function closeModal(){ qs('#productModal').classList.remove('open'); }
 
 /*** ROUTER ***/
 const routes = {
+  '#home': renderHome,
   '#shop': renderShop,
   '#programmi': renderPrograms,
   '#about': renderAbout,
@@ -536,7 +547,23 @@ function renderShop(){
     renderList(PRODUCTS);
   });
 }
-
+function renderHome(){
+  qs('#view').innerHTML = `
+    <section class="card pad" style="margin-top:20px; text-align:center">
+      <img src="images/venditrice.jpg" alt="Foto venditrice" style="width:140px;height:140px;border-radius:50%;object-fit:cover;margin-bottom:16px">
+      <h2 style="margin:0">Ciao, sono Viviana Marletta 👋</h2>
+      <p class="muted" style="margin:12px 0 18px; line-height:1.6">
+        Sono incaricata indipendente Herbalife e aiuto le persone a costruire abitudini sane e sostenibili per il loro benessere.
+        <br><br>
+        Offro consulenze personalizzate, supporto continuo e programmi flessibili per nutrizione, energia e idratazione.
+      </p>
+      <div class="toolbar" style="justify-content:center">
+        <a class="btn brand" href="#shop">🌿 Vai allo Shop</a>
+        <a class="btn" href="#contatti">✉️ Contattami</a>
+      </div>
+    </section>
+  `;
+}
 
 function renderPrograms(){
   qs('#view').innerHTML=`
@@ -637,7 +664,7 @@ qs('#year').textContent = new Date().getFullYear();
 
 // primo mount
 updateCartCount(); renderCart();
-if(!location.hash) location.hash='#shop';
+if(!location.hash) location.hash='#home';
 mount();
 </script>
 </body>
