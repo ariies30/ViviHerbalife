@@ -409,7 +409,9 @@ function renderShop(){
     countEl.textContent = `${list.length} risultati`;
     listEl.innerHTML = list.map(p=>`
       <article class="product card">
-        <div class="img-wrap"><img src="${p.image}" alt="${p.name}" loading="lazy"></div>
+      <div class="img-wrap" style="cursor:pointer" data-action="view" data-id="${p.id}">
+      <img src="${p.image}" alt="${p.name}" loading="lazy">
+      </div>
         ${p.tags?.includes('new')?'<div class="badge">NUOVO</div>':''}
         ${p.tags?.includes('best-seller')?'<div class="badge" style="left:auto;right:12px">BEST</div>':''}
         <div class="pad" style="padding:14px">
