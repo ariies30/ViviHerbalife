@@ -435,7 +435,7 @@ function renderShop(){
       <img src="${p.image}" alt="${p.name}" loading="lazy">
       </div>
         ${p.tags?.includes('new')?'<div class="badge">NUOVO</div>':''}
-        ${p.tags?.includes('best-seller')?'<div class="badge" style="left:auto;right:12px">BEST</div>':''}
+        ${p.tags?.includes('best-seller')?'<div class="badge">BEST</div>':''}
         ${p.tags?.includes('offer')?'<div class="badge">OFFERTA</div>':''}
         <div class="pad" style="padding:14px">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
