@@ -114,25 +114,6 @@ footer{margin-top:40px;border-top:1px solid #e5e7eb}
   .layout-shop{grid-template-columns:1fr}
   .sidebar-filters{position:static}
 }
-  .badge-wrap {
-  position:absolute;
-  top:12px;
-  left:12px;
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap;
-}
-
-.badge {
-  background:linear-gradient(135deg,var(--accent),#f97316);
-  color:#0a0e1a;
-  font-weight:800;
-  padding:6px 10px;
-  border-radius:999px;
-  font-size:.8rem;
-  box-shadow:0 2px 6px rgba(0,0,0,.25);
-}
-
 </style>
 </head>
 <body>
@@ -429,47 +410,21 @@ function renderShop(){
   const listEl = qs('#products');
   const countEl = qs('#count');
 
-function renderList(list){
-  countEl.textContent = `${list.length} risultati`;
-  listEl.innerHTML = list.map(p=>`
-    <article class="product card">
+  function renderList(list){
+    countEl.textContent = `${list.length} risultati`;
+    listEl.innerHTML = list.map(p=>`
+      <article class="product card">
       <div class="img-wrap" style="cursor:pointer" data-action="view" data-id="${p.id}">
-        <img src="${p.image}" alt="${p.name}" loading="lazy">
-        <div class="badge-wrap">
-          ${p.tags?.includes('new')?'<span class="badge">NUOVO</span>':''}
-          ${p.tags?.includes('best-seller')?'<span class="badge">BEST</span>':''}
-          ${p.tags?.includes('offer')?'<span class="badge">OFFERTA</span>':''}
-        </div>
+      <div class="img-wrap">
+      <img src="${p.image}" alt="${p.name}" loading="lazy">
+      <div class="badge-wrap">
+      ${p.tags?.includes('new')?'<span class="badge">NUOVO</span>':''}
+      ${p.tags?.includes('best-seller')?'<span class="badge">BEST</span>':''}
+      ${p.tags?.includes('offer')?'<span class="badge">OFFERTA</span>':''}
       </div>
-      <div class="pad" style="padding:14px">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-          <h3 style="margin:0;font-size:1rem;cursor:pointer" data-action="view" data-id="${p.id}">
-            ${p.name}
-          </h3>
-          <div class="price">${money(p.price)}</div>
-        </div>
-        <div class="muted" style="font-size:.9rem;margin:6px 0 10px">${p.category}</div>
-        <div class="toolbar">
-          <button class="btn brand" data-action="add" data-id="${p.id}">Aggiungi</button>
-          <button class="btn" data-action="view" data-id="${p.id}">Dettagli</button>
-          ${p.paymentLink?`<a class="btn" href="${p.paymentLink}" target="_blank" rel="noopener">Compra ora</a>`:''}
-        </div>
+        ${p.tags?.includes('new')?'<div class="badge">NUOVO</div>':''}
+        ${p.tags?.includes('best-seller')?'<div class="badge" style="left:auto;right:12px">BEST</div>':''}
       </div>
-    </article>
-  `).join('');
-
-  // Bind pulsanti "Aggiungi"
-  listEl.querySelectorAll('[data-action="add"]').forEach(b=> 
-    b.onclick = ()=> addToCart(PRODUCTS.find(p=>p.id===b.dataset.id))
-  );
-
-  // Bind su immagine, nome e bottone "Dettagli"
-  listEl.querySelectorAll('[data-action="view"]').forEach(b=> 
-    b.onclick = ()=> openModal(PRODUCTS.find(p=>p.id===b.dataset.id))
-  );
-}
-
-
 
         <div class="pad" style="padding:14px">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
