@@ -184,7 +184,6 @@ footer{margin-top:40px;border-top:1px solid #e5e7eb}
   <a href="#faq" data-route>FAQ</a>
   <a href="#policies" data-route>Policy</a>
   <a href="#contatti" data-route>Contatti</a>
-  <a href="#maratona" data-route>Maratona</a>
     </nav>
 
     <div class="floating-cart">
@@ -364,7 +363,6 @@ const routes = {
   '#faq': renderFAQ,
   '#policies': renderPolicies,
   '#contatti': renderContacts,
-  '#maratona': renderMaratona
 };
 function setActiveNav(){ const h=location.hash||'#shop'; qsa('[data-route]').forEach(a=> a.classList.toggle('active', a.getAttribute('href')===h)); }
 window.addEventListener('hashchange', mount);
@@ -646,63 +644,6 @@ function checkout(){
   const wa=`https://wa.me/${CONFIG.whatsapp.replace(/[^\d]/g,'')}?text=${encodeURIComponent(text)}`;
   const opened=window.open(wa,'_blank'); if(!opened){ location.href=`mailto:${CONFIG.email}?subject=Nuovo ordine&body=${encodeURIComponent(text)}`; }
 }
-
-  function renderMaratona(){
-  qs('#view').innerHTML = `
-    <section class="card pad" style="margin-top:20px">
-      <h1 class="text-center" style="margin-bottom:20px">
-        Vuoi Perdere Peso, Taglie, Acquisire Più Energia e Depurarti?
-      </h1>
-
-      <img src="https://mcusercontent.com/d4c478718989f0de6b0106f6f/images/e977c4c6-094e-d502-e4c7-712d5f3cba67.jpg"
-           alt="Maratona del Benessere"
-           style="width:100%;border-radius:12px;margin-bottom:20px">
-
-      <h2 class="text-center">Scopri come la Maratona Virtuale può essere la soluzione anche per te</h2>
-      <p style="line-height:1.6;margin:15px 0">
-        Un programma che permette a tutti di ottenere risultati definitivi, perché crea costanza
-        in maniera semplice, naturale e divertente... come in un gioco!
-      </p>
-
-      <h3>Cosa ti offre?</h3>
-      <ul style="margin-bottom:20px">
-        <li>Piano alimentare personalizzato</li>
-        <li>Ricette per pasti e spuntini equilibrati</li>
-        <li>Affiancamento personalizzato dal Capitano</li>
-        <li>Supporto del gruppo</li>
-      </ul>
-
-      <h3>E ancora...</h3>
-      <ul style="margin-bottom:20px">
-        <li>Un gioco a punti motivante che premia le tue azioni</li>
-        <li>Approfondimenti via Zoom con consigli pratici</li>
-        <li>Allenamenti per tutti i livelli</li>
-      </ul>
-
-      <iframe src="https://player.vimeo.com/video/1045146528"
-              style="width:100%;height:480px;border:none;border-radius:12px;margin:20px 0"
-              allowfullscreen></iframe>
-
-      <h2 style="margin-top:30px;text-align:center">
-        Non sei solo in questo viaggio – Le nostre garanzie
-      </h2>
-      <ul style="margin-bottom:20px">
-        <li>Staff medico scientifico con oltre 300 medici</li>
-        <li>50 PhD</li>
-        <li>Un Premio Nobel per la Medicina</li>
-        <li>Collaborazione scientifica con il CONI</li>
-        <li>Un programma attivo in più di 80 paesi</li>
-      </ul>
-
-      <div style="margin:30px 0;text-align:center">
-        <p><strong>Viviana Marletta</strong><br>
-        📧 vivianamarletta@libero.it<br>
-        📱 347 960 8643</p>
-      </div>
-    </section>
-  `;
-}
-
 
 /*** INIT ***/
 qs('#openCart').onclick=openCart;
